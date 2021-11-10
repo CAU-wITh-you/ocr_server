@@ -25,7 +25,7 @@ const path = require('path');
 //파일을 저장할 디렉토리 설정 (현재 위치에 uploads라는 폴더가 생성되고 하위에 파일이 생성된다.)
 const storage = multer.diskStorage({ 
     destination: (req, file, cb) => {
-      cb(null, '../images');
+      cb(null, './images');
     }, // 이미지 업로드 경로
     filename : (req,file, cb) => {
       console.log(file);
@@ -57,7 +57,6 @@ router.post('/test_body', upload.single("img"), async function(req,res){
   //결과가 오면 받은 이미지 파일을 삭제하고 ocr완료한 text를 리턴
   promise1
   .then((value) =>{
-    console.log(value + "!");
     fs.access(path, fs.constants.F_OK, (err) => { // A
       if (err) return console.log('삭제할 수 없는 파일입니다');
     
@@ -92,7 +91,7 @@ async function ocr(path){
         ocr_text = data.toString();
     });
     result.on('close', resolve);
-  }) 
+  }).catch() 
   return ocr_text;
   
   
