@@ -5,7 +5,7 @@ import pandas as pd
 import cv2
 import numpy as np
 import os
-import fastwer
+# import fastwer
 import time
 import sys
 import json

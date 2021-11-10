@@ -79,7 +79,7 @@ router.post('/test_body', upload.single("img"), async function(req,res){
 async function ocr(path){
   const spawn = require('child_process').spawn;
 
-  const result = spawn('python', ['./ocr/ocr.py', path]);
+  const result = spawn('python3', ['./ocr/ocr.py', path]);
   var ocr_text = '';
 
   //ocr.py 는 동기적으로 실행되어 결과값을 기다려야함.
