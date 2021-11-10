@@ -25,6 +25,9 @@ const path = require('path');
 //파일을 저장할 디렉토리 설정 (현재 위치에 uploads라는 폴더가 생성되고 하위에 파일이 생성된다.)
 const storage = multer.diskStorage({ 
     destination: (req, file, cb) => {
+      if (!fs.existsSync('./images')){
+        fs.mkdirSync('./images');
+      }
       cb(null, './images');
     }, // 이미지 업로드 경로
     filename : (req,file, cb) => {
