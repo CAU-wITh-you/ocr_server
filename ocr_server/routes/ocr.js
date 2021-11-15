@@ -5,32 +5,59 @@ var router = express.Router();
 // img 저장 후, ocr진행.
 // ocr result (text) -> response
 
-router.post('/', function(req, res, next) {
-  //1. request body (time, video_name) 을 받아서 저장\
-    const { video_time, video_name } = req.body;
-  //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
+router.get('/', function(req, res, next) {
+    //1. request body (time, video_name) 을 받아서 저장\
+      const x = (req.query.x);
+      const y = (req.query.y);
+      const w = (req.query.w);
+      const h = (req.query.h);
+      const video_time = Number(req.query.t);
+      const video_name = req.query.n;
+      console.log(x,y,w,h);
+    //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
+  
+      capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => {
+          ocr_imge(img_file_name).then((result_text) => {
+              res.status(200).json(
+                  {
+                      "result" : result_text,
+                  }
+              )
+          }).catch()
+      }).catch()
+    //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
+  
+    //4. response -> result_text
+      
+  });
 
-    capture_frame(video_name, video_time).then((img_file_name) => {
-        ocr_imge(img_file_name).then((result_text) => {
-            res.status(200).json(
-                {
-                    "result" : result_text,
-                }
-            )
-        }).catch()
-    }).catch()
-  //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
 
-  //4. response -> result_text
+// router.post('/', function(req, res, next) {
+//   //1. request body (time, video_name) 을 받아서 저장\
+//     const { video_time, video_name } = req.body;
+//   //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
+
+//     capture_frame(video_name, video_time).then((img_file_name) => {
+//         ocr_imge(img_file_name).then((result_text) => {
+//             res.status(200).json(
+//                 {
+//                     "result" : result_text,
+//                 }
+//             )
+//         }).catch()
+//     }).catch()
+//   //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
+
+//   //4. response -> result_text
     
-});
+// });
 
-function capture_frame(video_name, video_time){
+function capture_frame(video_name, video_time, x, y, w, h){
     return new Promise(function(resolve, reject){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python', ['./capture_module/converter.py', video_time, video_name]);
+        const result = spawn('python', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());

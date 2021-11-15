@@ -7,19 +7,20 @@ sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
 
 #시간정보를 받아서 영상의fps와 함께 계산해서 원하는 frame번호 얻는 함수.
-# @@@@@@@@@ time 받는 형식 정해지면 수정 필요.@!@@@@@@@@@@@
+# @@@@@@@@@ time 받는 형식 정해지면 수정 필요.@!@@@@@@@@@@@ => 초단위로 받기로 했다.
 def cal_time_to_frame(time, fps):
-    hms = time.split(':')
-    time_second = int(hms[0]) * 60 * 60 + int(hms[1]) * 60 + int(hms[2])
-    frame_number = (time_second * fps)
+    frame_number = (time * fps)
     # fps는 flaot값으로 나오기 때문에 float값 상태에서 곱해준 뒤, 반올림을 해야 가장 근접한 프레임이 나온다.
     return round(frame_number)
 
 if __name__ == '__main__':
     # parameter (video_time, video_name)
-    video_time = sys.argv[1]
+    video_time = int(sys.argv[1])
     video_name = sys.argv[2]
-
+    x = float(sys.argv[3])
+    y = float(sys.argv[4])
+    w = float(sys.argv[5])
+    h = float(sys.argv[6])
     #create our directory for the frames
     if not os.path.exists('./image_frames'):
         os.makedirs('./image_frames')
@@ -39,6 +40,9 @@ if __name__ == '__main__':
     ret, frame = test_vid.read() 
     # 받아온 이미지 프레임 저장.
     # @@@이미지 처리는 여기서도 가능 ( 잘라내기 or OCR이미지 전처리 ) @@@
+    width = (test_vid.get(cv2.CAP_PROP_FRAME_WIDTH))   
+    height  = (test_vid.get(cv2.CAP_PROP_FRAME_HEIGHT))   
+    frame = frame[int(height*y): int(height*(y + h)), int(width*x): int(width*(x + w))]
     cv2.imwrite(name, frame) 
     
     # 종료.
