@@ -4,8 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes/ocr_from_get_image');
 var usersRouter = require('./routes/users');
+var ocrRouter = require('./routes/ocr');
+var downloadRouter = require('./routes/download_mp4');
 
 var app = express();
 
@@ -21,6 +23,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/users', usersRouter);
 app.use('/', indexRouter);
+app.use('/ocr', ocrRouter);
+app.use('/mdownload', downloadRouter);
 
 
 // catch 404 and forward to error handler

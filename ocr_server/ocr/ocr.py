@@ -92,44 +92,44 @@ def blur(img):
     return cv2.bilateralFilter(img, 5, 75, 75)
 
 
-def save_img(image, folder_name, file_name): # 변환된 이미지 저장을 위해
-    path = os.getcwd()
-    new_dir = os.path.join(path, folder_name)
-    # print(new_dir)
-    if os.path.isdir(new_dir):
-        pass
-    else:
-        os.mkdir(new_dir)
+# def save_img(image, folder_name, file_name): # 변환된 이미지 저장을 위해
+#     path = os.getcwd()
+#     new_dir = os.path.join(path, folder_name)
+#     # print(new_dir)
+#     if os.path.isdir(new_dir):
+#         pass
+#     else:
+#         os.mkdir(new_dir)
 
-    new_path = folder_name + '/' + file_name
-    new_path = os.path.join(path, new_path)
-    # print(new_path)
-    cv2.imwrite(new_path, image)
+#     new_path = folder_name + '/' + file_name
+#     new_path = os.path.join(path, new_path)
+#     # print(new_path)
+#     cv2.imwrite(new_path, image)
 
-def save_txt(text, folder_name, file_name): # ocr 결과 저장 
-    path = os.getcwd()
-    new_dir = os.path.join(path, folder_name)
-    # print(new_dir)
-    if os.path.isdir(new_dir):
-        pass
-    else:
-        os.mkdir(new_dir)
+# def save_txt(text, folder_name, file_name): # ocr 결과 저장 
+#     path = os.getcwd()
+#     new_dir = os.path.join(path, folder_name)
+#     # print(new_dir)
+#     if os.path.isdir(new_dir):
+#         pass
+#     else:
+#         os.mkdir(new_dir)
 
-    new_path = folder_name + '/' + file_name
-    new_path = os.path.join(path, new_path)
-    # print(new_path)
-    file = open(new_path, 'w', encoding='utf8')
-    file.write(text)
-    file.close()
+#     new_path = folder_name + '/' + file_name
+#     new_path = os.path.join(path, new_path)
+#     # print(new_path)
+#     file = open(new_path, 'w', encoding='utf8')
+#     file.write(text)
+#     file.close()
 
-def get_text_ffile(filename):
-    text = ''
-    file = open(filename, mode= 'r', encoding="utf-8")
-    lines= file.readlines()
-    for i in range(len(lines)):
-        text += lines[i]
-    file.close()
-    return text
+# def get_text_ffile(filename):
+#     text = ''
+#     file = open(filename, mode= 'r', encoding="utf-8")
+#     lines= file.readlines()
+#     for i in range(len(lines)):
+#         text += lines[i]
+#     file.close()
+#     return text
 
 def ocr(image, lang): # ocr
     custom_config = r'-c preserve_interword_spaces=1 --oem 3 --psm 6 -l ' + lang
@@ -170,13 +170,6 @@ def ocr(image, lang): # ocr
     return result_text
 
 
-def error_rate(name, text, ref):
-    print(name + " : ")
-    cer = fastwer.score_sent(text,ref, char_level = True) # character error rate
-    wer = fastwer.score_sent(text,ref, char_level = False) # word error rate
-
-    return cer, wer
-
 def blur_and_gray(image): # blur + gray
     return get_grayscale(blur(image))
 
@@ -189,36 +182,11 @@ def opening_b_g_th(image):
 def closing_b_g_th(image):
     return closing(blur_gray_threshold(image))
 
-# # test 부분
-# for i in range(1,12):
-#     start = time.time()
-#     img_name = 'ex'+ str(i) # image file name
-#     img = cv2.imread(img_name + '.JPG') # 이미지 불러오고
-#     # 이미지 처리
-#     # for i in range(n): # 이미지 처리 n 개 case
-#     img = resize(img)
-#     img = blur_gray_threshold(img)
-#     #ocr
-#     result = ocr(img, 'eng_b+kor_b')
-#     ref = get_text_ffile(img_name+'_ref.txt')    
-#     wer, cer = error_rate(img_name, result, ref)
-#     # 이미지 저장
-#     save_img(img, 'blur_gray_threshold', img_name + '.JPG')
-#     # ocr 텍스트 저장
-#     save_txt(result, 'blur_gray_threshold', img_name + '_ocr.txt')
-#     # wer, cer 도 이미지변환별로 list에 잘 넣어서 종합 txt로 만들기.
-#     print(f'wer : {wer}  cer : {cer}')
-#     print("time : ", time.time() - start) 
 
 # 이미지를 받아서 ocr후 텍스트 반환
 if __name__ == '__main__':
     input = sys.argv[1]
-    # dat = json.loads(input)
-    # binary_arry = dat['binary']['data']
 
-    # binary_np = np.array(binary_arry, dtype=np.uint8)
-
-    # img = cv2.imdecode(binary_np, cv2.IMREAD_ANYCOLOR)
     img = cv2.imread(input) # 이미지 불러오고
     img = resize(img)
     img = closing_b_g_th(img)
