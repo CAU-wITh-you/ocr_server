@@ -31,7 +31,7 @@ if __name__ == '__main__':
     file_name = file_md5sum
     youtube = YouTube(input_url)
 
-    stream = youtube.streams.filter(adaptive=True).first()
+    stream = youtube.streams.filter(adaptive=True, file_extension='mp4', only_video=True).first()
 
     vidpath = os.path.join(os.getcwd(),'Downloads')
 
