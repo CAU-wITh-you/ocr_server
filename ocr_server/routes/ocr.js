@@ -9,6 +9,8 @@ var router = express.Router();
 // 해야할 것!
 // 캡쳐 후 이미지 스토리지 저장하고 url 반환해주는 거 추가
 // 캡쳐 시도 시 mp4없으면 loading 확인 하고 기다렸다가 하기. (생각해보니 video_name 이 없어서 )
+// 똑같은 캡쳐 시도 들어올 때. -->> 중복 이미지 고려방향 생각.
+
 
 router.get('/', function(req, res, next) {
     //1. request body (time, video_name) 을 받아서 저장\
