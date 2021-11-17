@@ -17,6 +17,7 @@ function wait_data(callback, url){
 
 router.post('/', function(req, res, next) {
   //1. request body 에서 url 받아오기
+    console.log(process.cwd(), '!!!!');
     url = req.body.url;
     url = url_modify(url);
     user_count = check_mp4(url);

@@ -33,12 +33,14 @@ if __name__ == '__main__':
     stream = youtube.streams.filter(adaptive=True, file_extension='mp4', only_video=True).first()
 
     vidpath = os.path.join(os.getcwd(),'Downloads')
-
+    # vidpath = './Downloads'
+    print(os.path.join(vidpath, file_md5sum))
     if not os.path.exists(vidpath):     # create destination_dir
         os.makedirs(vidpath)
-
+    
     stream.download(vidpath, file_md5sum)
 
     file_md5sum = move_video_to(
         os.path.join(vidpath, file_md5sum),vidpath)
+    
     print(file_name, end='')
