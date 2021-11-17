@@ -76,7 +76,7 @@ function download_video(url){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python', ['./capture_module/downloader.py', url]);
+        const result = spawn('python3', ['./capture_module/downloader.py', url]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
