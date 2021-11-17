@@ -8,6 +8,7 @@ var indexRouter = require('./routes/ocr_from_get_image');
 var usersRouter = require('./routes/users');
 var ocrRouter = require('./routes/ocr');
 var downloadRouter = require('./routes/download_mp4');
+var delete_mp4Router = require('./routes/delete_mp4');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use('/users', usersRouter);
 app.use('/', indexRouter);
 app.use('/ocr', ocrRouter);
 app.use('/mdownload', downloadRouter);
+app.use('/mdelete', delete_mp4Router);
 
 
 // catch 404 and forward to error handler

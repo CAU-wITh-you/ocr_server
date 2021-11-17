@@ -1,9 +1,14 @@
 var express = require('express');
+const fs= require('fs');
 var router = express.Router();
 
 // 파일을 주고 받지 않고, 다운받아 놓은 mp4를 기반으로 프레임 캡쳐 후 img파일 (.png)로 저장.
 // img 저장 후, ocr진행.
 // ocr result (text) -> response
+
+// 해야할 것!
+// 캡쳐 후 이미지 스토리지 저장하고 url 반환해주는 거 추가
+// 캡쳐 시도 시 mp4없으면 loading 확인 하고 기다렸다가 하기. (생각해보니 video_name 이 없어서 )
 
 router.get('/', function(req, res, next) {
     //1. request body (time, video_name) 을 받아서 저장\
@@ -16,14 +21,22 @@ router.get('/', function(req, res, next) {
       console.log(x,y,w,h);
     //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
   
-      capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => {
+      capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
           ocr_imge(img_file_name).then((result_text) => {
-              res.status(200).json(
+                res.status(200).json(
                   {
                       "result" : result_text,
                   }
               )
+              return img_file_name;
+          }).then((img_file_name)=>{
+            fs.unlink(img_file_name, function(err){
+                if(err) {
+                console.log("Error : ", err)
+                }
+            })
           }).catch()
+
       }).catch()
     //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
   

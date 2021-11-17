@@ -38,11 +38,13 @@ function user_count_add(url){
     find_data = data.find((data) => data.url === url);
     if (find_data !== undefined)
         find_data.user_count += 1;
+    return find_data.user_count;
 }
 function user_count_minus(url){
     find_data = data.find((data) => data.url === url);
     if (find_data !== undefined)
         find_data.user_count -= 1;
+    return find_data.user_count;
 }
 function delete_data(url){
     find_data = data.find((data) => data.url === url);
@@ -74,9 +76,20 @@ function IsVideo(url){
     }
 }
 
+function IsVideo_byVideoName(video_name){
+    find_data = data.find((data) => data.video_name === video_name);
+    if (find_data === undefined){
+        return { user_count : -1, url : 'not found'};
+    }
+    else{
+        return {user_count : find_data.user_count, url : find_data.url};
+    }
+}
+
 module.exports.data = data;
 module.exports.add_data = add_data;
 module.exports.isVideo = IsVideo;
+module.exports.isVideo_byVideoName = IsVideo_byVideoName;
 module.exports.user_count_add = user_count_add;
 module.exports.user_count_minus = user_count_minus;
 module.exports.delete_data = delete_data;
