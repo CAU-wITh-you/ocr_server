@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     vidpath = os.path.join(os.getcwd(),'Downloads')
     # vidpath = './Downloads'
-    print(os.path.join(vidpath, file_md5sum))
+
     if not os.path.exists(vidpath):     # create destination_dir
         os.makedirs(vidpath)
     
