@@ -22,8 +22,9 @@ if __name__ == '__main__':
     w = float(sys.argv[5])
     h = float(sys.argv[6])
     #create our directory for the frames
-    if not os.path.exists(os.path.join(os.getcwd(),'image_frames')):
-        os.makedirs(os.path.join(os.getcwd(),'image_frames'))
+    img_path = os.path.join(os.getcwd(),'image_frames')
+    if not os.path.exists(img_path):
+        os.makedirs(img_path)
     
     #  create our video path
     vidpath = os.path.join(os.getcwd(),'Downloads')
@@ -33,8 +34,8 @@ if __name__ == '__main__':
     #원하는 frame값을 구한다.
     want_frame = cal_time_to_frame(video_time, fps)
     #원하는 frame 이미지를 저장할 이름을 정한 뒤 ( video name + frame number + .png )
-    name = 'image_frames/' + video_name + str(want_frame) + '.png'
-    name = os.path.join(os.getcwd(),name)
+    name = './image_frames/' +  video_name + str(want_frame) + '.png'
+    # name = os.path.join(os.getcwd(), 'image_frames', name)
     # test_vid 객체 ( VideoCapture 객체 ) 의 프레임을 원하는 프레임 바로 이전 프레임으로 옮긴다.
     test_vid.set(cv2.CAP_PROP_POS_FRAMES, want_frame -1)
     # read()함수를 통해서 test_vid 의 다음 프레임을 받아온다. (그래서 이전 프레임으로 set한다.)
@@ -44,9 +45,9 @@ if __name__ == '__main__':
     width = (test_vid.get(cv2.CAP_PROP_FRAME_WIDTH))   
     height  = (test_vid.get(cv2.CAP_PROP_FRAME_HEIGHT))   
     frame = frame[int(height*y): int(height*(y + h)), int(width*x): int(width*(x + w))]
-    cv2.imwrite(name, frame) 
-    
+    cv2.imwrite(name, frame)
     # 종료.
+    print(test_vid.get(cv2.CAP_PROP_POS_FRAMES))
     test_vid.release()
     #이미지 파일 이름(경로) return.
     print(name, end='')
