@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
                 )
             })
         }else{ // loading에 없으면 loading에 추가 후, 다운로드 시도.
-            mp4_table.add_loading_data(url, console.log(mp4_table.loading_data));
+            mp4_table.add_loading_data(url);
             // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
             download_video(url).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
                 console.log('download end');
@@ -76,7 +76,7 @@ function download_video(url){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python3', ['./capture_module/downloader.py', url]);
+        const result = spawn('python3', [__dirname + '/capture_module/downloader.py', url]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
