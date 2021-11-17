@@ -73,7 +73,7 @@ function capture_frame(video_name, video_time, x, y, w, h){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
+        const result = spawn('python3', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
@@ -95,7 +95,7 @@ function ocr_imge(img_file_name){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python', ['./ocr/ocr.py', img_file_name]);
+        const result = spawn('python3', ['./ocr/ocr.py', img_file_name]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
