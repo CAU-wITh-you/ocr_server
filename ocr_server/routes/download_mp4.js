@@ -74,7 +74,7 @@ router.post('/', function(req, res, next) {
 function download_video(url){
     return new Promise(function(resolve, reject){
         const spawn = require('child_process').spawn;
-        console.log(url);
+        // console.log(url);
         //@@서버에선 python3
         const result = spawn('python3', ['./capture_module/downloader.py', url]);
         try{

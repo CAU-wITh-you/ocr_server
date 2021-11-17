@@ -24,7 +24,7 @@ def move_video_to(internal_video_path, destination_dir):
 
 # url을 받아서 youtube 영상을 .mp4파일로 받고, 그 파일 이름을 반환.
 if __name__ == '__main__':
-    input_url = sys.argv[1]
+    input_url = str(sys.argv[1])
     # filename (for unique filename)
     file_md5sum = uuid.uuid4().hex
     file_name = file_md5sum
