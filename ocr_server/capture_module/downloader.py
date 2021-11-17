@@ -2,7 +2,6 @@ import os
 import uuid
 import sys
 
-
 from pytube import YouTube
 import io
 
@@ -34,6 +33,7 @@ if __name__ == '__main__':
     stream = youtube.streams.filter(adaptive=True, file_extension='mp4', only_video=True).first()
 
     vidpath = os.path.join(os.getcwd(),'Downloads')
+
     if not os.path.exists(vidpath):     # create destination_dir
         os.makedirs(vidpath)
 
@@ -42,5 +42,3 @@ if __name__ == '__main__':
     file_md5sum = move_video_to(
         os.path.join(vidpath, file_md5sum),vidpath)
     print(file_name, end='')
-
-    
