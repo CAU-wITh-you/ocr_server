@@ -6,9 +6,7 @@ import cv2
 import numpy as np
 import os
 # import fastwer
-import time
 import sys
-import json
 # codec error 해결
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
@@ -192,4 +190,3 @@ if __name__ == '__main__':
     img = closing_b_g_th(img)
     result = ocr(img, 'eng_b')
     print(result, end='')
-    # print(input, end='')

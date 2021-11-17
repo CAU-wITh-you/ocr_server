@@ -20,10 +20,11 @@ router.get('/', function(req, res, next) {
       const h = (req.query.h);
       const video_time = Number(req.query.t);
       const video_name = req.query.n;
-      console.log(x,y,w,h);
+      console.log(x,y,w,h, video_name, video_time);
     //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
   
       capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
+          console.log(img_file_name, '!');
           ocr_imge(img_file_name).then((result_text) => {
                 res.status(200).json(
                   {
@@ -72,7 +73,7 @@ function capture_frame(video_name, video_time, x, y, w, h){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python3', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
+        const result = spawn('python', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
@@ -94,7 +95,7 @@ function ocr_imge(img_file_name){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python3', ['./ocr/ocr.py', img_file_name]);
+        const result = spawn('python', ['./ocr/ocr.py', img_file_name]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());

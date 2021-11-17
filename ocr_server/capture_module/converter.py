@@ -47,7 +47,6 @@ if __name__ == '__main__':
     frame = frame[int(height*y): int(height*(y + h)), int(width*x): int(width*(x + w))]
     cv2.imwrite(name, frame)
     # 종료.
-    print(test_vid.get(cv2.CAP_PROP_POS_FRAMES))
     test_vid.release()
     #이미지 파일 이름(경로) return.
     print(name, end='')
