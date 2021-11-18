@@ -37,7 +37,7 @@ async function uploadFile(filePath) {
   await storage.bucket(bucketName).upload(filePath, {
     destination: destFileName,
   });
-  await storage.bucket(bucketName).file(destFileName).makePublic() // 읽을 수 있게 변경.
+  await storage.bucket(bucketName).makePublic() // 읽을 수 있게 변경.
   result_url = 'https://storage.googleapis.com/' + bucketName + '/' + destFileName;
   return result_url; 
 }
