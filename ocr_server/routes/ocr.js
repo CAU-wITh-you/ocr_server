@@ -12,8 +12,40 @@ var router = express.Router();
 // 똑같은 캡쳐 시도 들어올 때. -->> 중복 이미지 고려방향 생각.
 
 
+/**
+ * TODO(developer): Uncomment the following lines before running the sample.
+ */
+// The ID of your GCS bucket
+// const bucketName = 'your-unique-bucket-name';
+
+// The path to your file to upload
+// const filePath = 'path/to/your/file';
+
+// The new ID for your GCS file
+// const destFileName = 'your-new-file-name';
+
+// Imports the Google Cloud client library
+const {Storage} = require('@google-cloud/storage');
+
+// Creates a client
+const storage = new Storage({ keyFilename : 'E:\\개인_데이터\\김지용\\중앙_컴공_3학년_2학기\\캡스톤디자인\\speedy-area-332405-687a37677e66.json'}); //google cloud storage key path.
+
+//google storage upload 함수
+async function uploadFile(filePath) {
+    destFileName = 'video_capture/' + filePath.slice(15);  // ./image_frames/ -잘라내기
+    bucketName = 'cap_video_capture'
+  await storage.bucket(bucketName).upload(filePath, {
+    destination: destFileName,
+  });
+  result_url = 'https://storage.googleapis.com/' + bucketName + '/' + destFileName;
+  return result_url; 
+}
+
+
+
 router.post('/', function(req, res, next) {
     //1. request body (time, video_name) 을 받아서 저장\
+    // get으로 request받을 때
     //   const x = (req.query.x);
     //   const y = (req.query.y);
     //   const w = (req.query.w);
@@ -26,10 +58,15 @@ router.post('/', function(req, res, next) {
   
       capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
           console.log(img_file_name, '!');
-          ocr_imge(img_file_name).then((result_text) => {
-                res.status(200).json(
+          var res_url = '';
+          uploadFile(img_file_name).then((result) =>{
+              res_url = result;
+          }).catch(console.error)
+          ocr_imge(img_file_name).then((result_text) => {//3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
+                res.status(200).json(//4. response -> result_text, img_url
                   {
                       "result" : result_text,
+                      "img_url" : res_url
                   }
               )
               return img_file_name;
@@ -40,12 +77,32 @@ router.post('/', function(req, res, next) {
                 }
             })
           }).catch()
-
       }).catch()
-    //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
+  });
+
+  router.post('/only_capture', function(req, res, next) { // ocr 없이 캡쳐만 request 시
+      const {x,y,w,h,video_time,video_name} = req.body;
+      console.log(x,y,w,h, video_name, video_time);
   
-    //4. response -> result_text
-      
+      capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
+          console.log(img_file_name, '!');
+          var res_url = '';
+          uploadFile(img_file_name).then((result) =>{
+              res_url = result;
+              res.status(200).json(//4. response -> img_url
+                {
+                    "img_url" : res_url
+                }
+            )
+            return img_file_name;
+          }).catch(console.error).then((img_file_name)=>{
+            fs.unlink(img_file_name, function(err){
+                if(err) {
+                console.log("Error : ", err)
+                }
+            })
+          })
+      }).catch()
   });
 
 
@@ -74,7 +131,7 @@ function capture_frame(video_name, video_time, x, y, w, h){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python3', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
+        const result = spawn('python', ['./capture_module/converter.py', video_time, video_name, x, y, w, h]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
@@ -96,7 +153,7 @@ function ocr_imge(img_file_name){
         const spawn = require('child_process').spawn;
 
         //@@서버에선 python3
-        const result = spawn('python3', ['./ocr/ocr.py', img_file_name]);
+        const result = spawn('python', ['./ocr/ocr.py', img_file_name]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
