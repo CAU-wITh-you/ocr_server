@@ -19,8 +19,8 @@ app.set('port', port);
  * Create HTTP server.
  */
 
- const privateKey = fs.readFileSync(__dirname + '\\private.pem');
- const certificate = fs.readFileSync(__dirname + '\\public.pem');
+ const privateKey = fs.readFileSync(__dirname + '/private.pem');
+ const certificate = fs.readFileSync(__dirname + '/public.pem');
  const options = {
      key: privateKey,
      cert: certificate
