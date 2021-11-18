@@ -37,6 +37,7 @@ async function uploadFile(filePath) {
   await storage.bucket(bucketName).upload(filePath, {
     destination: destFileName,
   });
+  await storage.bucket(bucketName).file(destFileName).makePublic() // 읽을 수 있게 변경.
   result_url = 'https://storage.googleapis.com/' + bucketName + '/' + destFileName;
   return result_url; 
 }
@@ -93,7 +94,7 @@ router.post('/', function(req, res, next) {
                 {
                     "img_url" : res_url
                 }
-            )
+            ).catch(console.error)
             return img_file_name;
           }).catch(console.error).then((img_file_name)=>{
             fs.unlink(img_file_name, function(err){
