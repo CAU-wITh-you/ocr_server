@@ -1,7 +1,7 @@
 var express = require('express');
 const fs= require('fs');
 var router = express.Router();
-
+const config= require('../config');
 // 파일을 주고 받지 않고, 다운받아 놓은 mp4를 기반으로 프레임 캡쳐 후 img파일 (.png)로 저장.
 // img 저장 후, ocr진행.
 // ocr result (text) -> response
@@ -28,7 +28,7 @@ var router = express.Router();
 const {Storage} = require('@google-cloud/storage');
 
 // Creates a client
-const storage = new Storage({ keyFilename : 'E:\\개인_데이터\\김지용\\중앙_컴공_3학년_2학기\\캡스톤디자인\\speedy-area-332405-687a37677e66.json'}); //google cloud storage key path.
+const storage = new Storage({ keyFilename : config.gs_key}); //google cloud storage key path.
 
 //google storage upload 함수
 async function uploadFile(filePath) {
