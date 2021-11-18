@@ -15,7 +15,7 @@ def cal_time_to_frame(time, fps):
 
 if __name__ == '__main__':
     # parameter (video_time, video_name)
-    video_time = int(sys.argv[1])
+    video_time = float(sys.argv[1])
     video_name = sys.argv[2]
     x = float(sys.argv[3])
     y = float(sys.argv[4])
