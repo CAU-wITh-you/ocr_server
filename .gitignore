@@ -4,3 +4,4 @@ dist/*
 Downloads
 image_frames
 *.pem
+*.json
