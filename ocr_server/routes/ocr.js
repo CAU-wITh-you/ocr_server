@@ -12,14 +12,15 @@ var router = express.Router();
 // 똑같은 캡쳐 시도 들어올 때. -->> 중복 이미지 고려방향 생각.
 
 
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
     //1. request body (time, video_name) 을 받아서 저장\
-      const x = (req.query.x);
-      const y = (req.query.y);
-      const w = (req.query.w);
-      const h = (req.query.h);
-      const video_time = Number(req.query.t);
-      const video_name = req.query.n;
+    //   const x = (req.query.x);
+    //   const y = (req.query.y);
+    //   const w = (req.query.w);
+    //   const h = (req.query.h);
+    //   const video_time = Number(req.query.t);
+    //   const video_name = req.query.n;
+      const {x,y,w,h,video_time,video_name} = req.body;
       console.log(x,y,w,h, video_name, video_time);
     //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
   
