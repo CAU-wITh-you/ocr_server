@@ -185,8 +185,7 @@ def closing_b_g_th(image):
 if __name__ == '__main__':
     foldername = str(sys.argv[1]) #폴더명을 인자로 받아서
     result = ''
-
-    frame_count = len(os.walk(foldername).next()[2])
+    frame_count = len(next(os.walk(foldername))[2])
     for i in range(0,frame_count):
         filename = foldername +'/frame' + str(i) + '.png'
         img = cv2.imread(filename) # 이미지 불러오고
@@ -195,4 +194,5 @@ if __name__ == '__main__':
         temp_result = ocr(img, 'eng_b')
         br = '\n-------------------------------'+str(i)+'-----------------------------------\n'
         result = result + br + temp_result
+        
     print(result, end='')

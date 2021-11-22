@@ -131,7 +131,7 @@ class VideoSegmentFinder:
         end_time = end_time
         start_frame_num = cal_time_to_frame(start_time, fps)
         end_frame_num = cal_time_to_frame(end_time, fps)
-        print(start_frame_num, end_frame_num)
+        # print(start_frame_num, end_frame_num)
 
         prev_timestamp = 0
         prev_frame = 255 * np.ones(
