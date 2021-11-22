@@ -42,24 +42,15 @@ async function uploadFile(filePath) {
 }
 
 
-
+//한장에 대해서 ocr 리퀘스트
 router.post('/', function(req, res, next) {
-    //1. request body (time, video_name) 을 받아서 저장\
-    // get으로 request받을 때
-    //   const x = (req.query.x);
-    //   const y = (req.query.y);
-    //   const w = (req.query.w);
-    //   const h = (req.query.h);
-    //   const video_time = Number(req.query.t);
-    //   const video_name = req.query.n;
       const {x,y,w,h,video_time,video_name} = req.body;
       console.log(x,y,w,h, video_name, video_time);
     //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
-  
       capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
           console.log(img_file_name, '!');
           var res_url = '';
-          uploadFile(img_file_name).then((result) =>{
+          uploadFile(img_file_name).then((result) =>{ // upload image file to google storage.
               res_url = result;
           }).catch(console.error)
           ocr_imge(img_file_name).then((result_text) => {//3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
@@ -80,6 +71,7 @@ router.post('/', function(req, res, next) {
       }).catch()
   });
 
+  //캡쳐만 리퀘스트
   router.post('/only_capture', function(req, res, next) { // ocr 없이 캡쳐만 request 시
       const {x,y,w,h,video_time,video_name} = req.body;
       console.log(x,y,w,h, video_name, video_time);
@@ -105,27 +97,33 @@ router.post('/', function(req, res, next) {
       }).catch()
   });
 
+  // 연속된 ocr 리퀘스트
+  router.post('/continuous', function(req, res, next) {
+    const {x,y,w,h,start_time, end_time,video_name} = req.body; //x,y,w,h 좌표와 시작시간, 끝시간, video_name을 받는다.
+    console.log(x,y,w,h, video_name, start_time, end_time);
 
-// router.post('/', function(req, res, next) {
-//   //1. request body (time, video_name) 을 받아서 저장\
-//     const { video_time, video_name } = req.body;
-//   //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
+  //2. segmenter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 폴더 이름
+    capture_multi_frames(video_name, start_time,end_time, x, y, w, h).then((img_folder_name) => { 
+        console.log(img_folder_name, '!');
+        // 이미지 업로드 x
+        ocr_multi_image(img_folder_name).then((result_text) => {//3. 이미지 폴더이름을 multi_ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
+              res.status(200).json(//4. response -> result_text
+                {
+                    "result" : result_text,
+                }
+            )
+            return img_folder_name;
+        }).then((img_folder_name)=>{ //완료한 폴더 삭제.
+          fs.rmdir(img_folder_name, {recursive: True},function(err){
+              if(err) {
+              console.log("Error : ", err)
+              }
+          })
+        }).catch()
+    }).catch()
+});
 
-//     capture_frame(video_name, video_time).then((img_file_name) => {
-//         ocr_imge(img_file_name).then((result_text) => {
-//             res.status(200).json(
-//                 {
-//                     "result" : result_text,
-//                 }
-//             )
-//         }).catch()
-//     }).catch()
-//   //3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
-
-//   //4. response -> result_text
-    
-// });
-
+//한장에 대해서 img frame 찾아서 저장하기.
 function capture_frame(video_name, video_time, x, y, w, h){
     return new Promise(function(resolve, reject){
         const spawn = require('child_process').spawn;
@@ -147,6 +145,28 @@ function capture_frame(video_name, video_time, x, y, w, h){
         }
     })
 }
+// 여러장에 대해서 img frames 찾아서 저장하기. 이미지 프레임의 폴더명 반환.
+function capture_multi_frames(video_name, start_time,end_time, x, y, w, h){
+    return new Promise(function(resolve, reject){
+        const spawn = require('child_process').spawn;
+
+        //@@서버에선 python3
+        const result = spawn('python3', ['./capture_module/segmenter.py', x, y, w, h,start_time,end_time, video_name, ]);
+        try{
+            result.stdout.on('data', function(data){
+                console.log(data.toString());
+                captured_img_folder = data.toString();
+            });
+            result.on('close', function () {
+                console.log('end');
+                resolve(captured_img_folder);
+            });
+        }catch (err){
+            console.log('error')
+            reject(err)
+        }
+    })
+}
 
 function ocr_imge(img_file_name){
     return new Promise(function(resolve, reject){
@@ -154,6 +174,28 @@ function ocr_imge(img_file_name){
 
         //@@서버에선 python3
         const result = spawn('python3', ['./ocr/ocr.py', img_file_name]);
+        try{
+            result.stdout.on('data', function(data){
+                console.log(data.toString());
+                result_text = data.toString();
+            });
+            result.on('close', function () {
+                console.log('end');
+                resolve(result_text);
+            });
+        }catch (err){
+            console.log('error')
+            reject(err)
+        }
+    })
+}
+
+function ocr_multi_image(img_folder_name){
+    return new Promise(function(resolve, reject){
+        const spawn = require('child_process').spawn;
+
+        //@@서버에선 python3
+        const result = spawn('python3', ['./ocr/multi_ocr.py', img_folder_name]);
         try{
             result.stdout.on('data', function(data){
                 console.log(data.toString());
