@@ -27,7 +27,7 @@ def remove_noise(image):
 def thresholding(image):
     thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0]
     if thresh <= 145:
-        return cv2.threshold(image, thresh - 15, 255, cv2.THRESH_BINARY)
+        return cv2.threshold(image, thresh - 15, 255, cv2.THRESH_BINARY_INV)
     else:
         return cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
     
@@ -197,10 +197,11 @@ if __name__ == '__main__':
         img = get_grayscale(img)
         ret,img = thresholding(img)
         # print(ret,end=' ')
-        if ret <= 140:
-            img = closing(img)
-        else:
-            img = opening(img)
+        # if ret <= 140:
+        #     img = closing(img)
+        # else:
+        #     img = opening(img)
+        img = opening(img)
         temp_result = ocr(img, 'eng_b')
         br = '\n-------------------------------'+str(i)+'-----------------------------------\n'
         result = result + br + temp_result
