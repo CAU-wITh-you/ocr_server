@@ -25,26 +25,30 @@ def remove_noise(image):
  
 #thresholding
 def thresholding(image):
-    return cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-
+    thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0]
+    if thresh <= 145:
+        return cv2.threshold(image, thresh - 15, 255, cv2.THRESH_BINARY)
+    else:
+        return cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
+    
 #dilation 팽창 (글씨가 더 팽창)
-def dilate(image):
+def dilate(image, iter):
     kernel = np.ones((5,5),np.uint8)
-    return cv2.dilate(image, kernel, iterations = 1)
+    return cv2.dilate(image, kernel, iterations = iter)
     
 #erosion 침식 (글씨가 더 얇아짐)
-def erode(image):
+def erode(image, iter):
     kernel = np.ones((5,5),np.uint8)
-    return cv2.erode(image, kernel, iterations = 1)
+    return cv2.erode(image, kernel, iterations = iter)
 
 #opening - erosion followed by dilation ( 침식 후 팽창)
 def opening(image):
-    kernel = np.ones((5,5),np.uint8)
-    return cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
+    image = dilate(erode(image,3),1)
+    return image
 
 def closing(image): #팽창 후 침식
-    kernel = np.ones((5,5),np.uint8)
-    return cv2.morphologyEx(image, cv2.MORPH_CLOSE, kernel)  
+    image = erode(dilate(image,3),1)
+    return image
 
 #canny edge detection
 def canny(image):
@@ -190,7 +194,13 @@ if __name__ == '__main__':
         filename = foldername +'/frame' + str(i) + '.png'
         img = cv2.imread(filename) # 이미지 불러오고
         img = resize(img)
-        img = closing_b_g_th(img)
+        img = get_grayscale(img)
+        ret,img = thresholding(img)
+        # print(ret,end=' ')
+        if ret <= 140:
+            img = closing(img)
+        else:
+            img = opening(img)
         temp_result = ocr(img, 'eng_b')
         br = '\n-------------------------------'+str(i)+'-----------------------------------\n'
         result = result + br + temp_result
