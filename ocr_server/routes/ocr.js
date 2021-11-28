@@ -85,7 +85,7 @@ router.post('/', function(req, res, next) {
                 {
                     "img_url" : res_url
                 }
-            ).catch(console.error)
+            )
             return img_file_name;
           }).catch(console.error).then((img_file_name)=>{
             fs.unlink(img_file_name, function(err){
