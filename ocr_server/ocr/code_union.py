@@ -299,6 +299,14 @@ def del_enough_space(lines):
                 line[i] = line[i][min_space:]
     return lines
 
+def to_semicolon(lines):
+    for line in lines:
+        for i in range(len(line)):
+            line[i] = line[i].rstrip()
+            if line[i][-1] == '.'  or line[i][-1] == ':':
+                line[i] = line[i][:-1] + ';'
+    return lines
+
 def get_reservednum(str):
     reserved = ['asm', 'double', 'new',	'switch', 'auto', 'else', 'operator', 'template',  
     'break', 'enum', 'private', 'this', 'case', 'extern', 'protected', 'throw', 'catch', 'float', 
@@ -460,6 +468,25 @@ def select_code(line):
             return [line[-1]]
     return line
 
+def add_bracket(lines):
+    left = 0
+    right = 0
+    for line in lines:
+        if line.startswith('//'):
+            print('test')
+            continue
+        left +=  line.count('{')
+        right += line.count('}')
+    if left > right:
+        for i in range(left - right):
+            lines += '}'
+    return lines
+
+def make_string(lines):
+    str = ''
+    for line in lines:
+        str += line + '\n'
+    return str
 
 def delete_code(answer):    
 
@@ -558,13 +585,18 @@ class code_correct:
                 res = union_code(res, temp)
         res = delete_code(res)
         res = del_enough_space(res)
-        self.answer = make_result(res)
+        res = to_semicolon(res)
+        temp_result = make_result(res)
+        temp_result = temp_result.splitlines()
+        temp_result = add_bracket(temp_result)
+        self.answer = make_string(temp_result)
             
     def ocr_code_correct(self): # ocr 한장 할 때.
         res = []
         text = self.ocr_lines[0]
         txt = text.splitlines()
         txt = trim_split(txt)
+        
         txt = correct_code(txt)
         for line in txt:
             tmp = []
@@ -572,7 +604,11 @@ class code_correct:
             res.append(tmp)
         res = delete_code(res)
         res = del_enough_space(res)
-        self.answer = make_result(res)
+        res = to_semicolon(res)
+        temp_result = make_result(res)
+        temp_result = temp_result.splitlines()
+        temp_result = add_bracket(temp_result)
+        self.answer = make_string(temp_result)
         
     def get_result(self):
         return self.answer
