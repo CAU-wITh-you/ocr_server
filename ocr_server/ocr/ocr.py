@@ -9,6 +9,7 @@ import os
 import sys
 # codec error 해결
 import io
+from code_union import code_correct
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
@@ -26,9 +27,9 @@ def remove_noise(image):
 #thresholding
 def thresholding(image):
     thresh = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0]
-    if thresh <= 145:
+    if thresh <= 145: # 검은 배경
         return cv2.threshold(image, thresh - 15, 255, cv2.THRESH_BINARY_INV)
-    else:
+    else: # 흰 배경
         return cv2.threshold(image, thresh, 255, cv2.THRESH_BINARY)
     
 #dilation 팽창 (글씨가 더 팽창)
@@ -73,7 +74,18 @@ def match_template(image, template):
     return cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED) 
 
 def resize(image):
-    size = (7016, 4961)
+    width = image.shape[1]
+    height = image.shape[0]
+    por = height / width
+    size = (10000, round(10000 * por))
+    image = cv2.resize(image,  dsize=size, interpolation=cv2.INTER_LINEAR)
+    return image
+    
+def return_smallsize(image):
+    width = image.shape[1]
+    height = image.shape[0]
+    por = height / width
+    size = (2048, round(2048 * por))
     image = cv2.resize(image,  dsize=size, interpolation=cv2.INTER_LINEAR)
     return image
     
@@ -134,7 +146,9 @@ def blur(img):
 #     return text
 
 def ocr(image, lang): # ocr
-    custom_config = r'-c preserve_interword_spaces=1 --oem 3 --psm 6 -l ' + lang
+    whitelist_op = '''-c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_+=\\'\\"<>(){}[]~`!@#$%^&*?|/\\ '''
+    # blacklist_op = '''-c tessedit_char_blacklist=¥®©¢¢*'''
+    custom_config = r'-c preserve_interword_spaces=1 '+  whitelist_op + ' --oem 3 --psm 6 -l ' + lang
     d = pytesseract.image_to_data(image, config=custom_config, output_type=Output.DICT)
     df = pd.DataFrame(d)
     result_text = ''
@@ -188,7 +202,7 @@ def closing_b_g_th(image):
 # 이미지를 받아서 ocr후 텍스트 반환
 if __name__ == '__main__':
     input = sys.argv[1]
-
+    
     img = cv2.imread(input) # 이미지 불러오고
     img = resize(img)
     img = get_grayscale(img)
@@ -199,5 +213,10 @@ if __name__ == '__main__':
     # else:
     #     img = opening(img)
     img = opening(img)
+    img = return_smallsize(img)
     result = ocr(img, 'eng_b')
-    print(result, end='')
+    code_corrector = code_correct([result])
+    code_corrector.ocr_code_correct()
+    result_text=code_corrector.get_result()
+    
+    print(result_text, end='')

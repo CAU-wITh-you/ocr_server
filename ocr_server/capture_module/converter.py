@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # @@@이미지 처리는 여기서도 가능 ( 잘라내기 or OCR이미지 전처리 ) @@@
     width = (test_vid.get(cv2.CAP_PROP_FRAME_WIDTH))   
     height  = (test_vid.get(cv2.CAP_PROP_FRAME_HEIGHT))   
-    print(width, height, '!!')
+    # print(width, height, '!!')
     frame = frame[round(height*y): round(height*(y + h)), round(width*x): round(width*(x + w))]
     cv2.imwrite(name, frame)
     # 종료.

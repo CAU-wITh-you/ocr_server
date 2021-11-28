@@ -1,3 +1,4 @@
+from numpy import testing
 import pytesseract
 from pytesseract import Output
 from PIL import Image
@@ -11,7 +12,7 @@ import sys
 import io
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
-
+from code_union import code_correct
 
 # get grayscale image
 
@@ -73,7 +74,18 @@ def match_template(image, template):
     return cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED) 
 
 def resize(image):
-    size = (7016, 4961)
+    width = image.shape[1]
+    height = image.shape[0]
+    por = height / width
+    size = (10000, round(10000 * por))
+    image = cv2.resize(image,  dsize=size, interpolation=cv2.INTER_LINEAR)
+    return image
+    
+def return_smallsize(image):
+    width = image.shape[1]
+    height = image.shape[0]
+    por = height / width
+    size = (2048, round(2048 * por))
     image = cv2.resize(image,  dsize=size, interpolation=cv2.INTER_LINEAR)
     return image
     
@@ -134,7 +146,10 @@ def blur(img):
 #     return text
 
 def ocr(image, lang): # ocr
-    custom_config = r'-c preserve_interword_spaces=1 --oem 3 --psm 6 -l ' + lang
+    whitelist_op = '''-c tessedit_char_whitelist=0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.,:;-_+=\\'\\"<>(){}[]~`!@#$%^&*?|/\\ '''
+    # blacklist_op = '''-c tessedit_char_blacklist=¥®©¢¢*'''
+    custom_config = r'-c preserve_interword_spaces=1 '+  whitelist_op + ' --oem 3 --psm 6 -l ' + lang
+    # custom_config = r'-c preserve_interword_spaces=1 '+ '--oem 3 --psm 6 -l ' + lang
     d = pytesseract.image_to_data(image, config=custom_config, output_type=Output.DICT)
     df = pd.DataFrame(d)
     result_text = ''
@@ -188,7 +203,7 @@ def closing_b_g_th(image):
 # 이미지 폴더명을 받고 폴더 내 이미지를 ocr후 하나로 합친 텍스트 반환
 if __name__ == '__main__':
     foldername = str(sys.argv[1]) #폴더명을 인자로 받아서
-    result = ''
+    result = []
     frame_count = len(next(os.walk(foldername))[2])
     for i in range(0,frame_count):
         filename = foldername +'/frame' + str(i) + '.png'
@@ -202,8 +217,11 @@ if __name__ == '__main__':
         # else:
         #     img = opening(img)
         img = opening(img)
+        img = return_smallsize(img)
         temp_result = ocr(img, 'eng_b')
-        br = '\n-------------------------------'+str(i)+'-----------------------------------\n'
-        result = result + br + temp_result
-        
-    print(result, end='')
+        # br = '\n-------------------------------'+str(i)+'-----------------------------------\n'
+        result.append(temp_result)
+    code_corretor = code_correct(result)
+    code_corretor.ocr_code_union()
+    result_text = code_corretor.get_result()
+    print(result_text, end='')
