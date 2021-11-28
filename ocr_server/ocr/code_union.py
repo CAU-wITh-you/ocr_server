@@ -331,11 +331,11 @@ def rm_blank_bf_period(str, startspace_num):
         if index == -1:
             break
 
-        if str[index - 1] == '.':
+        if str[index - 1] == '.' or str[index - 1] == ' ':
             str = str[:index ] + str[index + 1 : ]
         elif index == len(str) - 1:
             break
-        elif str[index + 1] == '.':
+        elif str[index + 1] == '.' or str[index + 1] == ' ':
             str = str[:index] + str[index + 1 : ]
             find_point = startspace_num
         else:

@@ -6,3 +6,5 @@ image_frames
 *.pem
 *.json
 config.js
+*.pyc
+*/__pychace__
