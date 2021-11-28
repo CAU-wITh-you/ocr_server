@@ -2,6 +2,7 @@ import os
 import cv2
 import sys
 import io
+import uuid
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8')
 
@@ -33,8 +34,9 @@ if __name__ == '__main__':
     fps = (test_vid.get(cv2.CAP_PROP_FPS))    
     #원하는 frame값을 구한다.
     want_frame = cal_time_to_frame(video_time, fps)
+    filename = uuid.uuid4().hex
     #원하는 frame 이미지를 저장할 이름을 정한 뒤 ( video name + frame number + .png )
-    name = './image_frames/' +  video_name + str(want_frame) + '.png'
+    name = './image_frames/' +  filename + '.png'
     # name = os.path.join(os.getcwd(), 'image_frames', name)
     # test_vid 객체 ( VideoCapture 객체 ) 의 프레임을 원하는 프레임 바로 이전 프레임으로 옮긴다.
     test_vid.set(cv2.CAP_PROP_POS_FRAMES, want_frame -1)
