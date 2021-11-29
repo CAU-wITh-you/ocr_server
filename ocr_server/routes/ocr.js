@@ -49,15 +49,11 @@ router.post('/', function(req, res, next) {
     //2. converter.py를 child_process로 생성해서 img파일 저장. return 값 이미지 파일 이름
       capture_frame(video_name, video_time, x, y, w, h).then((img_file_name) => { 
           console.log(img_file_name, '!');
-          var res_url = '';
-          uploadFile(img_file_name).then((result) =>{ // upload image file to google storage.
-              res_url = result;
-          }).catch(console.error)
+
           ocr_imge(img_file_name).then((result_text) => {//3. 이미지 파일이름을 ocr.py에 인자로 child_process 생성 -> return 값 ocr 결과 text
                 res.status(200).json(//4. response -> result_text, img_url
                   {
                       "result" : result_text,
-                      "img_url" : res_url
                   }
               )
               return img_file_name;
