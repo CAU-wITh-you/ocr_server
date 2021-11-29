@@ -473,7 +473,7 @@ def add_bracket(lines):
     right = 0
     for line in lines:
         if line.startswith('//'):
-            print('test')
+            # print('test')
             continue
         left +=  line.count('{')
         right += line.count('}')
