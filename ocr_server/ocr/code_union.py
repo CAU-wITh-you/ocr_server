@@ -522,13 +522,13 @@ def delete_code(answer):
                         delete = True
                         dnum = 5
 
-                # elif(len(str1) > 5):
-                #     if(get_reservednum(str1) == 0):
-                #         tmp = remove_bracket(str1)
-                #         tmp = remove_string(tmp)
-                #         if(len(tmp.split()) > 5):
-                #             delete = True
-                #             dnum = 2
+                elif(len(str1) > 5):
+                    if(get_reservednum(str1) == 0):
+                        tmp = remove_bracket(str1)
+                        tmp = remove_string(tmp)
+                        if(len(tmp.split()) > 5):
+                            delete = True
+                            dnum = 2
 
                 else:
                     check = ['+','-','*','/','=','{','}','(',')','[',']']
