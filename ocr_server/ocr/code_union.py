@@ -215,6 +215,8 @@ def union_code(lines, txt):
                             # 추가 or pass(found만 true면)
                             if((len(multi_sim_index[i]["index"]) != 0) and multi_sim_index[i]["append"]): # 앞 조건은 해당 라인이 found가 있었는지 확인.
                                 lines[before].append(multi_sim_index[i]["txt"]) #found만 true일때는 너무 유사하므로 추가 x (이미 있다고 판단)
+                            elif (len(multi_sim_index[i]["index"]) != 0): # found가 false일 때 해당 인덱스에 삽입. (새로이 추가한 경우의 수)
+                                lines.insert(before+1,[multi_sim_index[i]["txt"]])
                             before += 1
                     temp_sim_index.clear() #정리.
                     multi_sim_index.clear() #정리
@@ -584,7 +586,7 @@ class code_correct:
             else:
                 res = union_code(res, temp)
         res = delete_code(res)
-        # res = del_enough_space(res)
+        res = del_enough_space(res)
         res = to_semicolon(res)
         temp_result = make_result(res)
         temp_result = temp_result.splitlines()
@@ -603,7 +605,7 @@ class code_correct:
             tmp.append(line)
             res.append(tmp)
         res = delete_code(res)
-        # res = del_enough_space(res)
+        res = del_enough_space(res)
         res = to_semicolon(res)
         temp_result = make_result(res)
         temp_result = temp_result.splitlines()
