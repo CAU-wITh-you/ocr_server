@@ -110,7 +110,7 @@ def same_reservednum(str1, str2):
     'public', 'try', 'char', 'for', 'register', 'typedef', 'class', 'friend', 'return', 'union', 
     'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 
     'inline', 'sizeof', 'void', 'delete', 'int', 'static', 'volatile', 'do', 'long', 'struct', 'while', 
-    'true', 'false','++', '--', '+=', '-=', '*=', '/=', '<=', '=>', '==', '!=']
+    'true', 'false','++', '--', '+=', '-=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout']
 
     reserved_num1 = []
     reserved_num2 = []
@@ -584,7 +584,7 @@ class code_correct:
             else:
                 res = union_code(res, temp)
         res = delete_code(res)
-        res = del_enough_space(res)
+        # res = del_enough_space(res)
         res = to_semicolon(res)
         temp_result = make_result(res)
         temp_result = temp_result.splitlines()
@@ -603,7 +603,7 @@ class code_correct:
             tmp.append(line)
             res.append(tmp)
         res = delete_code(res)
-        res = del_enough_space(res)
+        # res = del_enough_space(res)
         res = to_semicolon(res)
         temp_result = make_result(res)
         temp_result = temp_result.splitlines()
