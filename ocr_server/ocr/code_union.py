@@ -315,7 +315,7 @@ def get_reservednum(str):
     'public', 'try', 'char', 'for', 'register', 'typedef', 'class', 'friend', 'return', 'union', 
     'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 'length',
     'inline', 'sizeof', 'void', 'delete', 'int', 'static', 'volatile', 'do', 'long', 'struct', 'while', 
-    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=']
+    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout']
 
     num = 0
     for w in reserved:
