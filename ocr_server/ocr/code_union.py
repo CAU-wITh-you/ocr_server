@@ -315,7 +315,19 @@ def get_reservednum(str):
     'public', 'try', 'char', 'for', 'register', 'typedef', 'class', 'friend', 'return', 'union', 
     'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 'length',
     'inline', 'sizeof', 'void', 'delete', 'int', 'static', 'volatile', 'do', 'long', 'struct', 'while', 
-    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout']
+    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout','compare', 'length', 
+    'swap', 'substr', 'size', 'resize', 'replace', 'append', 'at', 'find', 'find_first_of', 'find_first_not_of',
+    'find_last_of', 'find_last_not_of', 'insert', 'max_size', 'push_back', 'pop_back', 'assign', 'copy', 'back', 
+    'begin', 'capacity', 'cbegin', 'cend', 'clear', 'crbegin', 'data', 'empty', 'erase', 'front', '', 'operator=', 
+    'operator[]', 'rfind', 'end', 'rend', 'shrink_to_fit', 'c_str', 'crend', 'rbegin', 'reserve', 'get_allocator',
+    'include', 'auto', 'if', 'break', 'case', 'register', 'continue', 'return', 'default', 'do', 'sizeof', 'static', 
+    'else', 'struct', 'switch', 'extern', 'typedef', 'union', 'for', 'goto', 'while', 'enum', 'const', 'volatile', 
+    'inline', 'restrict', 'asm', 'fortran','alignas', 'alignof', 'and', 'and_eq', 'audit', 'axiom', 'bitand', 'bitor', 
+    'catch', 'class', 'compl', 'concept', 'constexpr', 'const_cast', 'decltype', 'delete', 'dynamic_cast', 'explicit', 
+    'export', 'final', 'friend', 'import', 'module', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'operator', 
+    'or', 'or_eq', 'override', 'private', 'protected', 'public', 'reinterpret_cast', 'requires', 'static_assert', 'static_cast', 
+    'template', 'this', 'thread_local', 'throw', 'try', 'typeid', 'typename', 'using', 'virtual', 'xor', 'xor_eq', 'namespace', 
+    'cin', 'cout', '<<', '>>']
 
     num = 0
     for w in reserved:
@@ -350,6 +362,45 @@ def rm_blank_bf_period(str, startspace_num):
             find_point = startspace_num
         else:
             find_point = index+1
+    return str
+
+def make_double_equals(str, startspace_num): #괄호사이의 = 을 ==으로 변경
+    find_point = startspace_num+1
+    while True:
+        point1 = str.find('(')
+        point2 = str.find(')', point1 + 1)
+        index = str.find('=', find_point)
+        while index > point2:
+            point1 = str.find('(', point2 + 1)
+            point2 = str.find(')', point1 + 1)
+            if point2 == -1 or point1 == -1:
+                break
+        if index > point1 and index < point2: # 괄호사이에 =이 있을 때
+            if str[index - 1] == '=' or str[index + 1] == '=': # 앞 또는 뒤에 =이 있으면 ==
+                pass
+            else:
+                str = str[:index]  + "=" + str[index:]
+            find_point = index+1
+            continue
+        
+        if index == -1 or point1 == -1 or point2 == -1: # 괄호나 '='이 없으면 끝
+            break
+        
+        find_point = point2
+    return str
+
+def string_to_char(str):
+    point2 = -1
+    while True:
+        point1 = str.find('"', point2 + 1)
+        point2 = str.find('"', point1 + 1)
+        
+        if point1 == -1 or point2 == -1:
+            break
+        if point2 - point1 == 2: # "" 사이에 글자가 하나면
+            str = str[:point1] + "'" + str[point1+1:]
+            str = str[:point2] + "'" + str[point2+1:]
+        
     return str
 
 def correct_code(txt):
@@ -425,6 +476,8 @@ def correct_code(txt):
                 b_stack.pop()
         
         newstr = rm_blank_bf_period(newstr, cur_startspace)
+        newstr = make_double_equals(newstr, cur_startspace)
+        newstr = string_to_char(newstr)
         if(append): ret.append(newstr)
         if(len(skipstr)!=0): 
             # print('skip', skipstr)
@@ -460,7 +513,6 @@ def select_startspace(line):
         # print('select', int(len(line)/2), ':', line)
         return [line[int(len(line)/2)]]
     return line
-
 
 def select_code(line):
     if(len(line)>1):
