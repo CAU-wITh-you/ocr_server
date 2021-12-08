@@ -376,7 +376,8 @@ def make_double_equals(str, startspace_num): #괄호사이의 = 을 ==으로 변
             if point2 == -1 or point1 == -1:
                 break
         if index > point1 and index < point2: # 괄호사이에 =이 있을 때
-            if str[index - 1] == '=' or str[index + 1] == '=': # 앞 또는 뒤에 =이 있으면 ==
+            if str[index - 1] == '=' or str[index + 1] == '=' or str[index - 1] == '>'or str[index - 1] == '<'or str[index - 1] == '!': 
+                # 앞 또는 뒤에 =이 있으면 ==, 앞에 '<', '>', '!'가 있으면 <=, >=, != 이므로 수정 x
                 pass
             else:
                 str = str[:index]  + "=" + str[index:]
