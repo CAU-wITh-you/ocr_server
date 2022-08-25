@@ -6,28 +6,28 @@
 
 var app = require('../app');
 var debug = require('debug')('ocr-server:server');
-var https = require('https');
+var http = require('http');
 const fs = require('fs');
 const config = require('../config');
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '443');
+var port = normalizePort(process.env.PORT || '8080');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
- const privateKey = fs.readFileSync(__dirname + '/' + config.private_key);
- const certificate = fs.readFileSync(__dirname + '/' + config.public_key);
- const options = {
-     key: privateKey,
-     cert: certificate
- };
+//  const privateKey = fs.readFileSync(__dirname + '/' + config.private_key);
+//  const certificate = fs.readFileSync(__dirname + '/' + config.public_key);
+//  const options = {
+//      key: privateKey,
+//      cert: certificate
+//  };
  
- const server = https.createServer(options, app);
+ const server = http.createServer(app);
 
 // var server = https.createServer(app);
 
@@ -97,4 +97,5 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Listening on ' + bind);
 }

@@ -21,6 +21,7 @@ router.post('/', function(req, res, next) {
     url = req.body.url;
     url = url_modify(url);
     user_count = check_mp4(url);
+    console.log(url);
     // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
     if (user_count === -1){// 3. mp4_table 없으면 check loading
         if (mp4_table.isLoadingData(url)){ // loading에 있으면 data에 뜰 때까지 wait 필요.
@@ -80,12 +81,17 @@ function download_video(url){
        
         const result = spawn('python3', ['./capture_module/downloader.py', url]);
         try{
+            video_name = ""     // 비디오 이름 선언.
             result.stdout.on('data', function(data){
+                console.log('test!!')
                 console.log(data.toString());
                 video_name = data.toString();
             });
+            result.stderr.on('data', function(data) {
+                console.log(data.toString(), '!!');
+            });
             result.on('close', function () {
-                console.log('end');
+                console.log('end ::', video_name);
 
                 resolve(video_name);
             });

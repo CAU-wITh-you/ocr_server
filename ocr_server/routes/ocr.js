@@ -110,7 +110,7 @@ router.post('/', function(req, res, next) {
             )
             return img_folder_name;
         }).then((img_folder_name)=>{ //완료한 폴더 삭제.
-            fs.rmdir(img_folder_name, {recursive: true},err =>{
+            fs.rm(img_folder_name, {recursive: true},err =>{
                 if(err) {
                 console.log("Error : ", err)
                 }

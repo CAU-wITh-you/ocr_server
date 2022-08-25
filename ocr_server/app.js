@@ -6,16 +6,18 @@ var logger = require('morgan');
 var cors = require('cors');
 
 var indexRouter = require('./routes/ocr_from_get_image');
-var usersRouter = require('./routes/users');
+var healthcheckRouter = require('./routes/healthcheck');
 var ocrRouter = require('./routes/ocr');
 var downloadRouter = require('./routes/download_mp4');
 var delete_mp4Router = require('./routes/delete_mp4');
 
 var app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -29,10 +31,15 @@ app.all('/*', function(req, res, next) {
   next(); 
 });
 
+function handleHome (req, res) {
+  console.log('Terminal Home');
+  res.send('Browser Home');
+}
 
+app.get('/', handleHome)
 
-app.use('/users', usersRouter);
-app.use('/', indexRouter);
+app.use('/health_check', healthcheckRouter);
+// app.use('/', indexRouter);
 app.use('/ocr', ocrRouter);
 app.use('/mdownload', downloadRouter);
 app.use('/mdelete', delete_mp4Router);
