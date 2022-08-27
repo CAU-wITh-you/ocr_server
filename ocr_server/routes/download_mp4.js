@@ -52,6 +52,7 @@ router.post('/', function(req, res, next) {
             }}).catch()
         }
     }else{ //data에 있으면 data video name return.
+        console.log('test here!');
         video_name =  mp4_table.return_video_name(url);
         if( video_name === false){
             res.status(404).json(
