@@ -9,6 +9,8 @@ var debug = require('debug')('ocr-server:server');
 var http = require('http');
 const fs = require('fs');
 const config = require('../config');
+const connectDB = require('./database/database.js');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -34,7 +36,9 @@ app.set('port', port);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
+connectDB().then((db) => {
+  console.log('init!', db);
+})
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
