@@ -5,8 +5,8 @@ const {getLoadingMp4s} = require('../database/database');
 //mp4다운로드 중에 request가 왔을 때, loading_data를 확인해서 현재 다운로드 중인지 확인하도록한다.
 
 
-function isLoadingData(url){
-    find_data = getLoadingMp4s().findOne({url : url}).then((data) => {
+async function isLoadingData(url){
+    find_data = await getLoadingMp4s().findOne({url : url}).then((data) => {
         console.log('isLoadingData!!\n', data);
         return data;
     });
@@ -19,7 +19,7 @@ function isLoadingData(url){
     }
 }
 
-function add_loading_data(url){
+async function add_loading_data(url){
     input_data = { url : url };
     return getLoadingMp4s().insertOne(input_data).then((data) => {
         console.log('add_loading_data!!\n', data);
@@ -27,8 +27,8 @@ function add_loading_data(url){
     })
 }
 
-function del_loading_data(url){
-    const result = getLoadingMp4s().deleteOne({url : url});
+async function del_loading_data(url){
+    const result = await getLoadingMp4s().deleteOne({url : url});
     if (result.deletedCount === 1) {
         console.log("Successfultty deleted one document -- loading_data");
     } else {
@@ -36,7 +36,7 @@ function del_loading_data(url){
     }
 }
 
-function add_data(url, video_name, user_count){
+async function add_data(url, video_name, user_count){
     input_data = { url : url, video_name : video_name, user_count : user_count, latest_used : new Date()};
     return getMp4s().insertOne(input_data).then((data) => {
         console.log('add_data!!\n', data);
@@ -45,8 +45,8 @@ function add_data(url, video_name, user_count){
 }
 
 // user count add & latest used time update.
-function user_count_add(url){
-    before_data = getMp4s().findOne({url : url}).then((data) => {
+async function user_count_add(url){
+    before_data = await getMp4s().findOne({url : url}).then((data) => {
         return data;
     });
     return getMp4s().findOneAndUpdate(
@@ -62,8 +62,8 @@ function user_count_add(url){
     });
 }
 
-function user_count_minus(url){
-    before_data = getMp4s().findOne({url : url}).then((data) => {
+async function user_count_minus(url){
+    before_data = await getMp4s().findOne({url : url}).then((data) => {
         return data;
     });
     return getMp4s().findOneAndUpdate(
@@ -75,13 +75,13 @@ function user_count_minus(url){
     ).then((result) => result.value.user_count);
 }
 
-function delete_data(url){
-    deleted = getMp4s().deleteOne({url : url});
+async function delete_data(url){
+    deleted = await getMp4s().deleteOne({url : url});
     console.log('delete Document in mp4data!!\n', deleted);
 }
 
-function return_video_name(url){
-    find_data = getMp4s().findOne({url : url}).then((data) => {
+async function return_video_name(url){
+    find_data = await getMp4s().findOne({url : url}).then((data) => {
         console.log('return_video_name!!\n', data);
         return data;
     }).catch(console.error);
@@ -94,8 +94,8 @@ function return_video_name(url){
 
 }
 
-function IsVideo(url){
-    find_data = getMp4s().findOne({url : url}).then((data) => {
+async function IsVideo(url){
+    find_data = await getMp4s().findOne({url : url}).then((data) => {
         console.log('IsVideo!!\n', data);
         return data;
     });
@@ -109,8 +109,8 @@ function IsVideo(url){
     }
 }
 
-function IsVideo_byVideoName(video_name){
-    find_data = getMp4s().findOne({video_name : video_name}).then((data) => {
+async function IsVideo_byVideoName(video_name){
+    find_data = await getMp4s().findOne({video_name : video_name}).then((data) => {
         console.log('IsVideo_byVideoName!!\n', data);
         return data;
     });
