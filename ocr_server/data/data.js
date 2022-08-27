@@ -84,7 +84,7 @@ function return_video_name(url){
     find_data = getMp4s().findOne({url : url}).then((data) => {
         console.log('return_video_name!!\n', data);
         return data;
-    });
+    }).catch(console.error);
     if (find_data){
         return find_data.video_name;
     }else{
