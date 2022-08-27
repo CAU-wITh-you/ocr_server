@@ -100,6 +100,7 @@ function IsVideo(url){
         return data;
     });
     if (find_data === null){
+        console.log("test.. is Video return -1");
         return -1;
     }
     else{
