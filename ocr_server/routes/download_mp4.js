@@ -22,6 +22,7 @@ router.post('/', function(req, res, next) {
     url = url_modify(url);
     user_count = check_mp4(url);
     console.log(url);
+    console.log('user count : ', user_count);
     // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
     if (user_count === -1){// 3. mp4_table 없으면 check loading
         if (mp4_table.isLoadingData(url)){ // loading에 있으면 data에 뜰 때까지 wait 필요.
