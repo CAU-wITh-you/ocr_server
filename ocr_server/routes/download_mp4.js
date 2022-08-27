@@ -29,7 +29,7 @@ router.post('/', async function(req, res, next) {
             new Promise(function(resolve, reject) {
                 wait_data(resolve, url);                   
             }).then((video_name) => { // wait가 끝나면 데이터 확인해서 user수 add 후 response.
-                check = await add_mp4_user(url, video_name);
+                check = add_mp4_user(url, video_name);
                 console.log('after add : ', check);
                 res.status(200).json(
                     {
@@ -42,7 +42,7 @@ router.post('/', async function(req, res, next) {
             // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
             download_video(url).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
                 console.log('download end');
-                check = await add_mp4_user(url, video_name);
+                check = add_mp4_user(url, video_name);
                 console.log('after add : ', check);
                 mp4_table.del_loading_data(url);
                 res.status(200).json(
@@ -105,7 +105,7 @@ function download_video(url){
 
 async function add_mp4_user(url, video_name){ //user 수 check 후 data에 add. 
     // url 정리. 뒤에 &이후에 나오는 필요없는 정보를 제거
-    count = check_mp4(url);
+    count = await check_mp4(url);
     if (count === -1){ //존재하지 않을 때는 처음으로 등록, 1은 처음 유저이므로
         input_data = await mp4_table.add_data(url, video_name, 1);
         return input_data.user_count;
