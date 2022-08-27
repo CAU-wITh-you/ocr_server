@@ -81,7 +81,10 @@ function delete_data(url){
 }
 
 function return_video_name(url){
-    find_data = getMp4s().findOne({url : url});
+    find_data = getMp4s().findOne({url : url}).then((data) => {
+        console.log('return_video_name!!\n', data);
+        return data;
+    });
     if (find_data !== undefined){
         return find_data.video_name;
     }else{
@@ -92,7 +95,10 @@ function return_video_name(url){
 }
 
 function IsVideo(url){
-    find_data = getMp4s().findOne({url : url});
+    find_data = getMp4s().findOne({url : url}).then((data) => {
+        console.log('IsVideo!!\n', data);
+        return data;
+    });
     if (find_data === undefined){
         return -1;
     }
@@ -102,7 +108,10 @@ function IsVideo(url){
 }
 
 function IsVideo_byVideoName(video_name){
-    find_data = getMp4s().findOne({video_name : video_name});
+    find_data = getMp4s().findOne({video_name : video_name}).then((data) => {
+        console.log('IsVideo_byVideoName!!\n', data);
+        return data;
+    });
     if (find_data === undefined){
         return { user_count : -1, url : 'not found'};
     }
