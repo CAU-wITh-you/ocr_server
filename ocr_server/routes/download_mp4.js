@@ -15,12 +15,12 @@ function wait_data(callback, url){
     }, 500);
 }
 
-router.post('/', function(req, res, next) {
+router.post('/', async function(req, res, next) {
   //1. request body 에서 url 받아오기
     console.log(process.cwd(), '!!!!');
     url = req.body.url;
     url = url_modify(url);
-    user_count = check_mp4(url).then((data));
+    user_count = await check_mp4(url);
     console.log(url);
     console.log('user count : ', user_count);
     // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
