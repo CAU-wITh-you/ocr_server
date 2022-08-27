@@ -110,7 +110,6 @@ function IsVideo_byVideoName(video_name){
     }
 }
 
-module.exports.data = data;
 module.exports.add_data = add_data;
 module.exports.isVideo = IsVideo;
 module.exports.isVideo_byVideoName = IsVideo_byVideoName;
@@ -118,7 +117,6 @@ module.exports.user_count_add = user_count_add;
 module.exports.user_count_minus = user_count_minus;
 module.exports.delete_data = delete_data;
 module.exports.return_video_name = return_video_name;
-module.exports.loading_data = loading_data;
 module.exports.del_loading_data = del_loading_data;
 module.exports.add_loading_data = add_loading_data;
 module.exports.isLoadingData = isLoadingData;
