@@ -27,7 +27,7 @@ function add_loading_data(url){
 }
 
 function del_loading_data(url){
-    const result = await getLoadingMp4s().deleteOne({url : url});
+    const result = getLoadingMp4s().deleteOne({url : url});
     if (result.deletedCount === 1) {
         console.log("Successfultty deleted one document -- loading_data");
     } else {
