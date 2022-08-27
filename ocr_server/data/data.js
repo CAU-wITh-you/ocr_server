@@ -10,6 +10,7 @@ function isLoadingData(url){
         console.log('isLoadingData!!\n', data);
         return data;
     });
+    console.log(find_data, '!test when none!');
     if (find_data === undefined){
         return false;
     }
