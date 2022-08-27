@@ -15,14 +15,13 @@ function wait_data(callback, url){
     }, 500);
 }
 
-router.post('/', async function(req, res, next) {
+router.post('/', function(req, res, next) {
   //1. request body 에서 url 받아오기
     console.log(process.cwd(), '!!!!');
     url = req.body.url;
     url = url_modify(url);
-    user_count = await check_mp4(url);
+    user_count = check_mp4(url);
     console.log(url);
-    console.log('user count : ', user_count);
     // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
     if (user_count === -1){// 3. mp4_table 없으면 check loading
         if (mp4_table.isLoadingData(url)){ // loading에 있으면 data에 뜰 때까지 wait 필요.
@@ -53,7 +52,7 @@ router.post('/', async function(req, res, next) {
             }}).catch()
         }
     }else{ //data에 있으면 data video name return.
-        video_name =  await mp4_table.return_video_name(url);
+        video_name =  mp4_table.return_video_name(url);
         if( video_name === false){
             res.status(404).json(
                 {
@@ -103,11 +102,11 @@ function download_video(url){
     })
 }
 
-async function add_mp4_user(url, video_name){ //user 수 check 후 data에 add. 
+function add_mp4_user(url, video_name){ //user 수 check 후 data에 add. 
     // url 정리. 뒤에 &이후에 나오는 필요없는 정보를 제거
-    count = await check_mp4(url);
+    count = check_mp4(url);
     if (count === -1){ //존재하지 않을 때는 처음으로 등록, 1은 처음 유저이므로
-        input_data = await mp4_table.add_data(url, video_name, 1);
+        input_data = mp4_table.add_data(url, video_name, 1);
         return input_data.user_count;
     }else{ //존재할 때는 유저수 증가.
         return mp4_table.user_count_add(url);
@@ -116,7 +115,8 @@ async function add_mp4_user(url, video_name){ //user 수 check 후 data에 add.
 
 // mp4_table에 mp4가 있는지 확인. 있으면 사용하고 있는 user_count, 없으면 -1
 function check_mp4(url){
-    return mp4_table.isVideo(url);
+    count = mp4_table.isVideo(url);
+    return count;
 }
 
 
