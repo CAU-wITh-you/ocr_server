@@ -37,8 +37,8 @@ app.set('port', port);
  * Listen on provided port, on all network interfaces.
  */
 
-connectDB().then((db) => {
-  console.log('init!', db);
+connectDB().then(() => {
+  console.log('init DB!');
 })
 server.listen(port);
 server.on('error', onError);
