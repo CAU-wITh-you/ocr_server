@@ -20,7 +20,7 @@ router.post('/', function(req, res, next) {
     console.log(process.cwd(), '!!!!');
     url = req.body.url;
     url = url_modify(url);
-    user_count = await check_mp4(url);
+    user_count = check_mp4(url).then((data));
     console.log(url);
     console.log('user count : ', user_count);
     // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
