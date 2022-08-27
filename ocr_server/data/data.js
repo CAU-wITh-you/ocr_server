@@ -104,6 +104,7 @@ function IsVideo(url){
         return -1;
     }
     else{
+        console.log('find_data in IsVideo', find_data, find_data.user_count);
         return find_data.user_count;
     }
 }
