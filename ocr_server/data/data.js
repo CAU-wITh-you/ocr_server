@@ -11,7 +11,7 @@ function isLoadingData(url){
         return data;
     });
     console.log(find_data, '!test when none!');
-    if (find_data === null){
+    if (!find_data){
         return false;
     }
     else{
@@ -85,7 +85,7 @@ function return_video_name(url){
         console.log('return_video_name!!\n', data);
         return data;
     });
-    if (find_data !== null){
+    if (find_data){
         return find_data.video_name;
     }else{
         return false;
@@ -99,7 +99,7 @@ function IsVideo(url){
         console.log('IsVideo!!\n', data);
         return data;
     });
-    if (find_data === null){
+    if (!find_data){
         console.log("test.. is Video return -1");
         return -1;
     }
