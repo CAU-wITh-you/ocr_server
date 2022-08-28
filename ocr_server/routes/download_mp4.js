@@ -115,7 +115,7 @@ function download_video(url){
 
 function add_mp4_user(url, video_name){ //user 수 check 후 data에 add. 
     // url 정리. 뒤에 &이후에 나오는 필요없는 정보를 제거
-    check_mp4(url).then((count) => {
+    return check_mp4(url).then((count) => {
         if (count === -1){ //존재하지 않을 때는 처음으로 등록, 1은 처음 유저이므로
             return mp4_table.add_data(url, video_name, 1).then(input_data => {
                 return input_data.user_count;
