@@ -24,6 +24,7 @@ router.post('/', function(req, res, next) {
         // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
         if (user_count === -1){// 3. mp4_table 없으면 check loading
             mp4_table.isLoadingData(url).then((in_loading) => {
+                console.log('when user_count == -1 ');
                 if (in_loading){ // loading에 있으면 data에 뜰 때까지 wait 필요.
                     new Promise(function(resolve, reject) {
                         wait_data(resolve, url);                   
@@ -35,9 +36,9 @@ router.post('/', function(req, res, next) {
                                 "video_name" : video_name
                             }
                         )
-                        });
+                        }).catch(console.error);
                         
-                    })
+                    }).catch(console.error);
                 }else{ // loading에 없으면 loading에 추가 후, 다운로드 시도.
                     mp4_table.add_loading_data(url);
                     // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
@@ -52,9 +53,9 @@ router.post('/', function(req, res, next) {
                             }
                         )
                         });
-                    }}).catch()
+                    }}).catch(console.error);
                 }
-            })
+            }).catch(console.error);
         }else{ //data에 있으면 data video name return.
             mp4_table.return_video_name(url).then(video_name => {
                 if( video_name === false){
@@ -71,11 +72,11 @@ router.post('/', function(req, res, next) {
                         "video_name" : video_name
                         }
                     )
-                    });
+                    }).catch(console.error);
                 }
-            });
+            }).catch(console.error);
         }
-    });
+    }).catch(console.error);
     // console.log(url);
     
     
