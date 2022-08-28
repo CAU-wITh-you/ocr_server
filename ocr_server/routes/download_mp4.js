@@ -128,7 +128,7 @@ function add_mp4_user(url, video_name){ //user 수 check 후 data에 add.
 
 // mp4_table에 mp4가 있는지 확인. 있으면 사용하고 있는 user_count, 없으면 -1
 function check_mp4(url){
-    return mp4_table.isVideo(url).then(result);
+    return mp4_table.isVideo(url);
 }
 
 
