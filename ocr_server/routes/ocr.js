@@ -26,7 +26,7 @@ const config= require('../config');
 
 // Imports the Google Cloud client library
 const {Storage} = require('@google-cloud/storage');
-
+const mp4_table = require('../data/data');
 // Creates a client
 const storage = new Storage({ keyFilename : config.gs_key}); //google cloud storage key path.
 

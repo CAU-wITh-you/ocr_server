@@ -7,11 +7,15 @@ const mp4_table = require('../data/data');
 
 function wait_data(callback, url){
     setTimeout(()=>{
-        if (check_mp4(url) !== -1){
-            callback(mp4_table.return_video_name(url));
-        }else{
-            wait_data(callback, url);
-        }
+        check_mp4(url).then(count => {
+            if (count !== -1){
+                mp4_table.return_video_name(url).then(video_name => {
+                    callback(video_name);
+                })
+            }else{
+                wait_data(callback, url);
+            }
+        })
     }, 500);
 }
 
