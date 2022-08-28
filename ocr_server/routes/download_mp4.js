@@ -17,58 +17,68 @@ function wait_data(callback, url){
 
 router.post('/', function(req, res, next) {
   //1. request body 에서 url 받아오기
-    console.log(process.cwd(), '!!!!');
+    // console.log(process.cwd(), '!!!!');
     url = req.body.url;
     url = url_modify(url);
-    user_count = check_mp4(url);
-    console.log(url);
-    // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
-    if (user_count === -1){// 3. mp4_table 없으면 check loading
-        if (mp4_table.isLoadingData(url)){ // loading에 있으면 data에 뜰 때까지 wait 필요.
-            new Promise(function(resolve, reject) {
-                wait_data(resolve, url);                   
-            }).then((video_name) => { // wait가 끝나면 데이터 확인해서 user수 add 후 response.
-                check = add_mp4_user(url, video_name);
-                console.log('after add : ', check);
-                res.status(200).json(
-                    {
-                    "video_name" : video_name
-                    }
-                )
+    check_mp4(url).then((user_count) => { 
+        // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
+        if (user_count === -1){// 3. mp4_table 없으면 check loading
+            mp4_table.isLoadingData(url).then((in_loading) => {
+                if (in_loading){ // loading에 있으면 data에 뜰 때까지 wait 필요.
+                    new Promise(function(resolve, reject) {
+                        wait_data(resolve, url);                   
+                    }).then((video_name) => { // wait가 끝나면 데이터 확인해서 user수 add 후 response.
+                        add_mp4_user(url, video_name).then(check =>{
+                            console.log('after add : ', check);
+                            res.status(200).json(
+                            {
+                                "video_name" : video_name
+                            }
+                        )
+                        });
+                        
+                    })
+                }else{ // loading에 없으면 loading에 추가 후, 다운로드 시도.
+                    mp4_table.add_loading_data(url);
+                    // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
+                    download_video(url).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
+                        console.log('download end');
+                        add_mp4_user(url, video_name).then(check => {
+                            console.log('after add : ', check);
+                            mp4_table.del_loading_data(url);
+                            res.status(200).json(
+                            {
+                                "video_name" : video_name
+                            }
+                        )
+                        });
+                    }}).catch()
+                }
             })
-        }else{ // loading에 없으면 loading에 추가 후, 다운로드 시도.
-            mp4_table.add_loading_data(url);
-            // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
-            download_video(url).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
-                console.log('download end');
-                check = add_mp4_user(url, video_name);
-                console.log('after add : ', check);
-                mp4_table.del_loading_data(url);
-                res.status(200).json(
-                    {
-                    "video_name" : video_name
-                    }
-                )
-            }}).catch()
-        }
-    }else{ //data에 있으면 data video name return.
-        video_name =  mp4_table.return_video_name(url);
-        if( video_name === false){
-            res.status(404).json(
-                {
-                "video_name" : video_name
+        }else{ //data에 있으면 data video name return.
+            mp4_table.return_video_name(url).then(video_name => {
+                if( video_name === false){
+                    res.status(404).json(
+                        {
+                        "video_name" : video_name
+                        }
+                    )
+                }else{
+                    add_mp4_user(url, video_name).then(check => {
+                        console.log('after add : ', check);
+                    res.status(200).json(
+                        {
+                        "video_name" : video_name
+                        }
+                    )
+                    });
                 }
-            )
-        }else{
-            check = add_mp4_user(url, video_name);
-            console.log('after add : ', check);
-            res.status(200).json(
-                {
-                "video_name" : video_name
-                }
-            )
+            });
         }
-    }
+    });
+    // console.log(url);
+    
+    
   //3. response 로 video name 전송. (video name은 uuid로 고유이름을 만든다.) 서버에서 video 이름 저장 필요? -- 캡쳐 시 request body 에 video name 을 받을 예정.
     
 });
@@ -104,19 +114,20 @@ function download_video(url){
 
 function add_mp4_user(url, video_name){ //user 수 check 후 data에 add. 
     // url 정리. 뒤에 &이후에 나오는 필요없는 정보를 제거
-    count = check_mp4(url);
-    if (count === -1){ //존재하지 않을 때는 처음으로 등록, 1은 처음 유저이므로
-        input_data = mp4_table.add_data(url, video_name, 1);
-        return input_data.user_count;
-    }else{ //존재할 때는 유저수 증가.
-        return mp4_table.user_count_add(url);
-    }
+    check_mp4(url).then((count) => {
+        if (count === -1){ //존재하지 않을 때는 처음으로 등록, 1은 처음 유저이므로
+            return mp4_table.add_data(url, video_name, 1).then(input_data => {
+                return input_data.user_count;
+            });
+        }else{ //존재할 때는 유저수 증가.
+            return mp4_table.user_count_add(url);
+        }
+    })
 }
 
 // mp4_table에 mp4가 있는지 확인. 있으면 사용하고 있는 user_count, 없으면 -1
 function check_mp4(url){
-    count = mp4_table.isVideo(url);
-    return count;
+    return mp4_table.isVideo(url).then(result);
 }
 
 
