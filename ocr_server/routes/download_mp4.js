@@ -28,7 +28,7 @@ router.post('/', function(req, res, next) {
         // 2. 다운로드 전에 mp4_table 확인해서 현재 존재하는 mp4인지 확인
         if (user_count === -1){// 3. mp4_table 없으면 check loading
             mp4_table.isLoadingData(url).then((in_loading) => {
-                console.log('when user_count == -1 ');
+                // console.log('when user_count == -1 ');
                 if (in_loading){ // loading에 있으면 data에 뜰 때까지 wait 필요.
                     new Promise(function(resolve, reject) {
                         wait_data(resolve, url);                   
@@ -98,7 +98,7 @@ function download_video(url){
         try{
             video_name = ""     // 비디오 이름 선언.
             result.stdout.on('data', function(data){
-                console.log('test!!')
+                // console.log('test!!')
                 console.log(data.toString());
                 video_name = data.toString();
             });

@@ -7,7 +7,7 @@ const {getLoadingMp4s} = require('../database/database');
 
 async function isLoadingData(url){
     return await getLoadingMp4s().findOne({url : url}).then((data) => {
-        console.log('isLoadingData!!\n', data);
+        // console.log('isLoadingData!!\n', data);
         if (!data){
             return false;
         }
@@ -20,7 +20,7 @@ async function isLoadingData(url){
 async function add_loading_data(url){
     input_data = { url : url };
     return getLoadingMp4s().insertOne(input_data).then((data) => {
-        console.log('add_loading_data!!\n', data);
+        // console.log('add_loading_data!!\n', data);
         return data;
     })
 }
@@ -36,9 +36,9 @@ async function del_loading_data(url){
 
 async function add_data(url, video_name, user_count){
     input_data = { url : url, video_name : video_name, user_count : user_count, latest_used : new Date()};
-    return getMp4s().insertOne(input_data).then((data) => {
-        console.log('add_data!!\n', data);
-        return data;
+    return getMp4s().insertOne(input_data).then(() => {
+        // console.log('add_data!!\n', data);
+        return input_data;
     })
 }
 
@@ -55,7 +55,7 @@ async function user_count_add(url){
         }},
         {returnDocument : 'after'}
     ).then((result) => {
-        console.log('after user_count_add!!\n', result.value);
+        // console.log('after user_count_add!!\n', result.value);
         return result.value.user_count
     });
 }
@@ -86,12 +86,12 @@ async function user_count_reset(url){
 
 async function delete_data(url){
     deleted = await getMp4s().deleteOne({url : url});
-    console.log('delete Document in mp4data!!\n', deleted);
+    // console.log('delete Document in mp4data!!\n', deleted);
 }
 
 async function return_video_name(url){
     return await getMp4s().findOne({url : url}).then((data) => {
-        console.log('return_video_name!!\n', data);
+        // console.log('return_video_name!!\n', data);
         if (data){
             return data.video_name;
         }else{
@@ -102,22 +102,22 @@ async function return_video_name(url){
 
 async function IsVideo(url){
     find_data = await getMp4s().findOne({url : url}).then((data) => {
-        console.log('IsVideo!!\n', data);
+        // console.log('IsVideo!!\n', data);
         return data;
     });
     if (!find_data){
-        console.log("test.. is Video return -1");
+        // console.log("test.. is Video return -1");
         return -1;
     }
     else{
-        console.log('find_data in IsVideo', find_data.user_count);
+        // console.log('find_data in IsVideo', find_data.user_count);
         return find_data.user_count;
     }
 }
 
 async function IsVideo_byVideoName(video_name){
     find_data = await getMp4s().findOne({video_name : video_name}).then((data) => {
-        console.log('IsVideo_byVideoName!!\n', data);
+        // console.log('IsVideo_byVideoName!!\n', data);
         return data;
     });
     if (!find_data){
