@@ -1,5 +1,6 @@
 const {getMp4s} = require('../database/database');
 const {getLoadingMp4s} = require('../database/database');
+const fs = require('fs');
 //mp4 다운로드를 위해 유지하는 테이블
 //같은 url로 들어오는 request에 대해서 중복으로 mp4를 다운받는 경우를 방지한다.
 //mp4다운로드 중에 request가 왔을 때, loading_data를 확인해서 현재 다운로드 중인지 확인하도록한다.
