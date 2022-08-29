@@ -46,7 +46,9 @@ app.use('/ocr', ocrRouter);
 app.use('/mdownload', downloadRouter);
 app.use('/mdelete', delete_mp4Router);
 
-const j = schedule.scheduleJob('30 * * * * *', mp4_table.video_use_check());
+const j = schedule.scheduleJob('30 * * * * *', function(){
+  mp4_table.video_use_check();
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
