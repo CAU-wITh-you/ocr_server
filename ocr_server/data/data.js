@@ -137,8 +137,20 @@ async function video_use_check(){
     }
 
     await cursor.forEach(document => {
-        timeDiff = getDateDiff(now ,document.latest_used)
-        console.log(timeDiff);
+        timeDiff = getDateDiff(now ,document.latest_used);
+        if (timeDiff > 0.9){ // when mp4 latest used time is more than a day.
+            console.log(document.url, 'is more than a day. delete mp4');
+            // DB에 user count reset 후, mp4 삭제.
+            user_count_reset(document.url).then(() =>{
+                file = './Downloads/' + document.video_name + '.mp4';
+                fs.unlink(file, function(err){
+                    if(err) {
+                    console.log("Error : ", err)
+                    }
+                })
+            })
+        }
+        
     })
 }
 
