@@ -46,7 +46,8 @@ app.use('/ocr', ocrRouter);
 app.use('/mdownload', downloadRouter);
 app.use('/mdelete', delete_mp4Router);
 
-const j = schedule.scheduleJob('30 * * * * *', function(){
+// 매 정각 mp4 파일을 체크해서 하루 이상 사용하지 않은 mp4는 삭제.
+const j = schedule.scheduleJob('0 0 * * * *', function(){
   mp4_table.video_use_check();
 });
 
