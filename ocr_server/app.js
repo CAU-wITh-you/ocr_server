@@ -10,6 +10,8 @@ var healthcheckRouter = require('./routes/healthcheck');
 var ocrRouter = require('./routes/ocr');
 var downloadRouter = require('./routes/download_mp4');
 var delete_mp4Router = require('./routes/delete_mp4');
+const schedule = require('node-schedule');
+const mp4_table = require('./data/data');
 
 var app = express();
 
@@ -44,6 +46,7 @@ app.use('/ocr', ocrRouter);
 app.use('/mdownload', downloadRouter);
 app.use('/mdelete', delete_mp4Router);
 
+const j = schedule.scheduleJob('30 * * * * *', mp4_table.video_use_check());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

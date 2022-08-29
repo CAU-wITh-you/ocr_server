@@ -128,6 +128,19 @@ async function IsVideo_byVideoName(video_name){
     }
 }
 
+async function video_use_check(){
+    const query = { user_count : {$gt : 0}};
+    const cursor = getMp4s().find(query);
+    if ((await cursor.count()) === 0) {
+        console.log("No documents found!");
+    }
+
+    await cursor.forEach(document => {
+        console.log(document);
+    })
+}
+
+
 module.exports.add_data = add_data;
 module.exports.isVideo = IsVideo;
 module.exports.isVideo_byVideoName = IsVideo_byVideoName;
@@ -139,3 +152,4 @@ module.exports.return_video_name = return_video_name;
 module.exports.del_loading_data = del_loading_data;
 module.exports.add_loading_data = add_loading_data;
 module.exports.isLoadingData = isLoadingData;
+module.exports.video_use_check = video_use_check;
