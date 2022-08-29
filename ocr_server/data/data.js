@@ -132,7 +132,7 @@ async function video_use_check(){
     const query = { user_count : {$gt : 0}};
     const cursor = getMp4s().find(query);
     const now = new Date();
-    if ((await cursor.countDocuments()) === 0) {
+    if ((await cursor.count()) === 0) {
         console.log("No documents found!");
     }
 
