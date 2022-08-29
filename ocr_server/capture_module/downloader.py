@@ -25,9 +25,16 @@ def move_video_to(internal_video_path, destination_dir):
 # url을 받아서 youtube 영상을 .mp4파일로 받고, 그 파일 이름을 반환.
 if __name__ == '__main__':
     input_url = str(sys.argv[1])
+    input_video_name = str(sys.argv[2])
     # filename (for unique filename)
-    file_md5sum = uuid.uuid4().hex
-    file_name = file_md5sum
+    file_name = ''
+    file_md5sum = ''
+    if input_video_name == 'new':
+        file_md5sum = uuid.uuid4().hex
+        file_name = file_md5sum
+    else:
+        file_md5sum = input_video_name
+        file_name = input_video_name
     youtube = YouTube(input_url)
     stream = youtube.streams.filter(adaptive=True, file_extension='mp4', only_video=True).first()
 

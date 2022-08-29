@@ -46,7 +46,7 @@ router.post('/', function(req, res, next) {
                 }else{ // loading에 없으면 loading에 추가 후, 다운로드 시도.
                     mp4_table.add_loading_data(url);
                     // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
-                    download_video(url).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
+                    download_video(url, 'new').then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
                         console.log('download end');
                         add_mp4_user(url, video_name).then(check => {
                             console.log('after add : ', check);
@@ -60,6 +60,23 @@ router.post('/', function(req, res, next) {
                     }}).catch(console.error);
                 }
             }).catch(console.error);
+        }else if (user_count === 0){
+            mp4_table.add_loading_data(url);
+            mp4_table.return_video_name(url).then((vd_name) =>{
+                // 2. child_process -> downloader.py이용해서 mp4 다운로드. (return 값은 video파일 이름(경로)) -- promise로 해야함.
+                download_video(url, vd_name).then((video_name) =>{{// 다운로드 완료 후 data에 추가, loading에 삭제
+                    console.log('download end');
+                    add_mp4_user(url, video_name).then(check => {
+                        console.log('after add : ', check);
+                        mp4_table.del_loading_data(url);
+                        res.status(200).json(
+                        {
+                            "video_name" : video_name
+                        }
+                    )
+                    });
+                }}).catch(console.error);
+            })
         }else{ //data에 있으면 data video name return.
             mp4_table.return_video_name(url).then(video_name => {
                 if( video_name === false){
@@ -88,13 +105,13 @@ router.post('/', function(req, res, next) {
     
 });
 
-function download_video(url){
+function download_video(url, video_name){
     return new Promise(function(resolve, reject){
         const spawn = require('child_process').spawn;
         // console.log(url);
         //@@서버에선 python3
        
-        const result = spawn('python3', ['./capture_module/downloader.py', url]);
+        const result = spawn('python3', ['./capture_module/downloader.py', url,video_name]);
         try{
             video_name = ""     // 비디오 이름 선언.
             result.stdout.on('data', function(data){

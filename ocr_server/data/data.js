@@ -74,12 +74,12 @@ async function user_count_minus(url){
     ).then((result) => result.value.user_count);
 }
 
-// when remove mp4 file, in mongoDB mp4 table's user count set -1.(not delete)
+// when remove mp4 file, in mongoDB mp4 table's user count set 0.(not delete)
 async function user_count_reset(url){
     return getMp4s().findOneAndUpdate(
         { url : url },
         { $set : { 
-            user_count : -1,
+            user_count : 0,
         }},
         {returnDocument : 'after'}
     ).then((result) => result.value.user_count);
