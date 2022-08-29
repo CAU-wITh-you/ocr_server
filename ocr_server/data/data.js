@@ -131,15 +131,21 @@ async function IsVideo_byVideoName(video_name){
 async function video_use_check(){
     const query = { user_count : {$gt : 0}};
     const cursor = getMp4s().find(query);
-    if ((await cursor.count()) === 0) {
+    const now = new Date();
+    if ((await cursor.countDocuments()) === 0) {
         console.log("No documents found!");
     }
 
     await cursor.forEach(document => {
-        console.log(document);
+        timeDiff = getDateDiff(now ,document.latest_used)
+        console.log(timeDiff);
     })
 }
 
+function getDateDiff(d1, d2){
+    const diffDate = d1 - d2;
+    return Math.abs(diffDate / (1000 * 60 * 60 * 24));
+}
 
 module.exports.add_data = add_data;
 module.exports.isVideo = IsVideo;
