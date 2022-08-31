@@ -1,61 +1,50 @@
 import re
+import string
+
+def get_startspace(str):
+    n = 0
+    for c in str:
+        if(c.isalpha() == False):
+            n += 1
+        else: break
+    return n
 
 def compare_start_space(str1, str2):
-    n1 = 0
-    n2 = 0
-    for c in str1:
-        if(c == ' '):
-            n1 += 1
-        else: break
-    for c in str2:
-        if(c == ' '):
-            n2 += 1
-        else: break
+    n1 = get_startspace(str1)
+    n2 = get_startspace(str2)
 
     return abs(n1-n2)
 
-
 def compare_brackets_num(str1, str2):
     brackets = ['<','>','[',']','(',')','{','}']
-    
-    num_brackets1 = [0, 0, 0, 0, 0, 0, 0, 0]
+    dic = {x:[0,0] for x in brackets}
     for c in str1:
-        for (i,b) in enumerate(brackets):
-            if(c == b):
-                num_brackets1[i] += 1
+        if c in dic: dic[c][0] += 1
 
-    num_brackets2 = [0, 0, 0, 0, 0, 0, 0, 0]
     for c in str2:
-        for (i,b) in enumerate(brackets):
-            if(c == b):
-                num_brackets2[i] += 1
+        if c in dic: dic[c][1] += 1
 
     result = 0
-    for (c1,c2) in zip(num_brackets1, num_brackets2):
+    for k in dic:
+        c1, c2 = dic[k]
         result += abs(c1-c2)
-
     return result
+
 
 def compare_alphabets_num(str1, str2):
-    alphabets = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','1','2','3','4','5','6','7','8','9','0']
-    
-    num_alphabets1 = [0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]
+    alphabets = list(string.printable)
+    dic = {x:[0,0] for x in alphabets}
     for c in str1:
-        for (i,b) in enumerate(alphabets):
-            if(c == b):
-                num_alphabets1[i] += 1
+        if c in dic: dic[c][0] += 1
 
-    num_alphabets2 = [0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0]
     for c in str2:
-        for (i,b) in enumerate(alphabets):
-            if(c == b):
-                num_alphabets2[i] += 1
+        if c in dic: dic[c][1] += 1
 
     result = 0
-    for (c1,c2) in zip(num_alphabets1, num_alphabets2):
+    for k in dic:
+        c1, c2 = dic[k]
         result += abs(c1-c2)
     return result
-
 
 
 def get_substr(str1, str2):
@@ -104,37 +93,58 @@ def get_LCS(str1, str2):
 
     return result
 
-def same_reservednum(str1, str2):
-    reserved = ['asm', 'double', 'new',	'switch', 'auto', 'else', 'operator', 'template',  
+def reservedset():
+    return set(['asm', 'double', 'new',	'switch', 'auto', 'else', 'operator', 'template',  
     'break', 'enum', 'private', 'this', 'case', 'extern', 'protected', 'throw', 'catch', 'float', 
     'public', 'try', 'char', 'for', 'register', 'typedef', 'class', 'friend', 'return', 'union', 
-    'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 
+    'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 'length',
     'inline', 'sizeof', 'void', 'delete', 'int', 'static', 'volatile', 'do', 'long', 'struct', 'while', 
-    'true', 'false','++', '--', '+=', '-=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout']
+    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout','compare', 'length', 
+    'swap', 'substr', 'size', 'resize', 'replace', 'append', 'at', 'find', 'find_first_of', 'find_first_not_of',
+    'find_last_of', 'find_last_not_of', 'insert', 'max_size', 'push_back', 'pop_back', 'assign', 'copy', 'back', 
+    'begin', 'capacity', 'cbegin', 'cend', 'clear', 'crbegin', 'data', 'empty', 'erase', 'front', '', 'operator=', 
+    'operator[]', 'rfind', 'end', 'rend', 'shrink_to_fit', 'c_str', 'crend', 'rbegin', 'reserve', 'get_allocator',
+    'include', 'auto', 'if', 'break', 'case', 'register', 'continue', 'return', 'default', 'do', 'sizeof', 'static', 
+    'else', 'struct', 'switch', 'extern', 'typedef', 'union', 'for', 'goto', 'while', 'enum', 'const', 'volatile', 
+    'inline', 'restrict', 'asm', 'fortran','alignas', 'alignof', 'and', 'and_eq', 'audit', 'axiom', 'bitand', 'bitor', 
+    'catch', 'class', 'compl', 'concept', 'constexpr', 'const_cast', 'decltype', 'delete', 'dynamic_cast', 'explicit', 
+    'export', 'final', 'friend', 'import', 'module', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'operator', 
+    'or', 'or_eq', 'override', 'private', 'protected', 'public', 'reinterpret_cast', 'requires', 'static_assert', 'static_cast', 
+    'template', 'this', 'thread_local', 'throw', 'try', 'typeid', 'typename', 'using', 'virtual', 'xor', 'xor_eq', 'namespace', 
+    'cin', 'cout', '<<', '>>', 'False', 'def', 'if', 'raise', 'None', 'del', 'import', 'True', 'elif', 'in', 'try'])
 
-    reserved_num1 = []
-    reserved_num2 = []
-    same_reserved = 0
+def same_reservednum(str1, str2):
+    str1 = re.sub('\s+',' ',str1)
+    str1 = re.split(r'[^a-zA-Z0-9]', str1)
+    str2 = re.sub('\s+',' ',str2)
+    str2 = re.split(r'[^a-zA-Z0-9]', str2)
 
-    for (i,w) in enumerate(reserved):
-        reserved_num1.append(str1.count(w))
-        reserved_num2.append(str2.count(w))
-    
-    for (c1,c2) in zip(reserved_num1, reserved_num2):
-        same_reserved += min(c1, c2)
-        
-    return same_reserved
+    reserved = reservedset()
+    dic = {x:[0,0] for x in reserved}
+    for c in str1:
+        if c in dic: dic[c][0] += 1
+
+    for c in str2:
+        if c in dic: dic[c][1] += 1
+
+    result = 0
+    for k in dic:
+        c1, c2 = dic[k]
+        result += min(c1,c2)
+    return result
 
 
 def get_difference_score(str1, str2):
+    #if(str1.find('return') != -1 and str2.find('return') != -1): return 0
+    str1 = ' '.join(str1.split())   #공백 여러개를 한개로 바꿈
+    str2 = ' '.join(str2.split())
+
     diff = 0
     diff += compare_start_space(str1, str2) * 2    #시작 공백 수
     diff += compare_brackets_num(str1, str2) * 2    #괄호 종류별 개수
-    diff += compare_alphabets_num(str1, str2)   #알파벳 종류별 개수
+    diff += compare_alphabets_num(str1, str2)/max(1,min(len(str1), len(str2)))   #알파벳 종류별 개수
     #diff -= same_reservednum(str1, str2) * 3
 
-    str1 = ' '.join(str1.split())   #공백 여러개를 한개로 바꿈
-    str2 = ' '.join(str2.split())
     diff += max(len(str1), len(str2)) - len(get_LCS(str1, str2))       
 
     #diff = diff/max(len(str1), len(str2)) * 10
@@ -144,125 +154,110 @@ def get_difference_score(str1, str2):
 
 
 def union_code(lines, txt):
-    idx = 0
-    multi_sim_check = True # 유사한 라인이 여러개 일때 True, 아니면 false
-    multi_sim_index = {} #유사한 라인 인덱스 저장. 유사한 라인이 여러개인 것이 중복으로 나올 수 있으므로
-    temp_sim_index = [] # multi_sim_index에 추가 될 리스트.
-    is_start_line = True #첫 번째 시작줄은 다르게 적용된다.
-    before_lines = []
+    dic = {i:[] for i in range(len(txt))}
+    match = {i:[] for i in range(len(txt))}
 
-    for (j_idx, j) in enumerate(txt):
-        found = False
-        append = True
-        if (multi_sim_check): # 첫 라인 검사 시 전체 검사, 유사한 라인이 여러개 일 때 추가 검토 필요.
-            #print("sim!", multi_sim_index)
-            for (i,line) in enumerate(lines):
-                for l in line:
-                    diff = get_difference_score(j, l)
-                    if(diff < 8):
-                        if(diff < 4): 
-                            append = False
-                        idx = i
-                        found = True
-                if (found): # 유사한 라인 발견 시 temp_sim_index에 해당 line 인덱스 추가.
-                    temp_sim_index.append(i)
-                    found = False
-            # 전체 조사가 끝나고
-            multi_sim_index[len(multi_sim_index)] = {
-                "txt" : j,
-                "index" : temp_sim_index[:],
-                "append" : append,
-            }
-            sim_n = len(temp_sim_index)
-            #print('sim_n', sim_n, temp_sim_index)
-            if sim_n == 0: # 없으면 .. 
-                if (is_start_line): # 첫 라인일 때 없으면 다음줄로 판단 보류.
-                    temp_sim_index.clear() #정리.
-                    is_start_line = False   
-                else:
-                    if len(multi_sim_index[len(multi_sim_index) - 2]["index"]) ==0: #이전 줄이 유사한 줄이 없을 때
-                        if len(multi_sim_index) == len(txt): # multi_sim_index에 들어간 라인 수가 txt전체 라인수와 같다면.
-                            
-                            for line in multi_sim_index:
-                                # if len(multi_sim_index[line]["index"]) == 0: #유사한 줄 없는 것만 (있는 건 추가를 안하는 방향으로) -> 버리는 것은 없는 것이 더 좋다.
-                                lines.append([multi_sim_index[line]["txt"]]) # lines 뒤에 붙인다. (or 모두 잘못된 것이라 판단하고 버리는 방법도 있다.)
-                                
-                        else: # 아니면 판단 다음 줄로 보류.
-                            temp_sim_index.clear() #정리. 
-                            pass
-                    else: # 이전 줄이 유사한 줄이 여러개 일 때. -> 이 줄은 잘못 인식된 줄이라고 판단.  -> 다음 줄로.
-                        temp_sim_index.clear() #정리. 
-            elif sim_n == 1: # 단 하나일 때
-                found = True
-                if (is_start_line): # 첫 라인일 때
-                    idx = temp_sim_index[0]
-                    if(found and append): lines[idx].append(j) #found만 true일때는 너무 유사하므로 추가 x (이미 있다고 판단)
-                    temp_sim_index.clear() #정리.
-                    multi_sim_index.clear() #정리
-                    multi_sim_check = False # false로 바꿔준다.
-                    is_start_line = False
-                else: # 이전 라인이 유사한 라인을 여러개 발견했을 때 여기로 온다.
-                    idx = temp_sim_index[0] # 이 라인의 index.
-                    sim_line_n = len(multi_sim_index) # 이번 라인을 포함한 multi_sim 라인의 개수.
-                    before = idx - sim_line_n + 1 # 이번 index에서 multi_sim 라인 개수만큼 뺀게 시작 index.
-                    # 이전 라인들 모두 추가
-                    if sim_line_n > idx: # 잘못인식.
-                        for line in multi_sim_index:
-                            # if len(multi_sim_index[line]["index"]) == 0: #유사한 줄 없는 것만 (있는 건 추가를 안하는 방향으로) -> 버리는 것은 없는 것이 더 좋다.
-                            lines.append([multi_sim_index[line]["txt"]]) # lines 뒤에 붙인다. (or 모두 잘못된 것이라 판단하고 버리는 방법도 있다.)
-                    else:
-                        for i in range(sim_line_n):
-                            # 추가 or pass(found만 true면)
-                            if((len(multi_sim_index[i]["index"]) != 0) and multi_sim_index[i]["append"]): # 앞 조건은 해당 라인이 found가 있었는지 확인.
-                                lines[before].append(multi_sim_index[i]["txt"]) #found만 true일때는 너무 유사하므로 추가 x (이미 있다고 판단)
-                            elif (len(multi_sim_index[i]["index"]) == 0): # found가 false일 때 해당 인덱스에 삽입. (새로이 추가한 경우의 수)
-                                lines.insert(before+1,[multi_sim_index[i]["txt"]])
-                            before += 1
-                    temp_sim_index.clear() #정리.
-                    multi_sim_index.clear() #정리
-                    multi_sim_check = False # false로 바꿔준다.
-            else: # 여러개 일 때, 다음 줄로 판단을 보류.
-                if (is_start_line) : # 첫 줄일때
-                    temp_sim_index.clear() #정리. 
-                    is_start_line = False  
-                else: 
-                    if len(multi_sim_index) == len(txt): # multi_sim_index에 들어간 라인 수가 txt전체 라인수와 같다면. -> 전체가 중복 append 생략.
-                        for line in multi_sim_index:
-                            # if len(multi_sim_index[line]["index"]) == 0: #유사한 줄 없는 것만 (있는 건 추가를 안하는 방향으로)
-                                lines.append([multi_sim_index[line]["txt"]]) # lines 뒤에 붙인다. (or 모두 잘못된 것이라 판단하고 버리는 방법도 있다.)
-                    else: # 아니면 판단 인덱스 이어지는 것이 있는 지 확인. -> 여러개/없으면 보류. 하나면 추가하고 끝
-                        temp_sim_index.clear() #정리. 
-                        pass  
-                    
-        else: #기존
-            j1 = ' '.join(j.split())
-            if(len(j1) != 1 or not ('{'in j1 or'}'in j1)):  # '{' '}'만 있으면 그냥 다음줄에 넣음 (탐색X)
-                for (i,line) in enumerate(lines):
-                    if(i >= idx):
-                        for l in line:
-                            diff = get_difference_score(j, l)
-                            if(diff < 8):
-                                if(diff < 4): 
-                                    append = False
-                                idx = i
-                                found = True
-                                #print('found',idx, diff, j)
-                        if(found): break
-                if(found and append): 
-                    lines[idx].append(j) #found만 true일때는 너무 유사하므로 추가 x (이미 있다고 판단)
-                if(found):
-                    for b in before_lines:
-                        lines.insert(idx, [b])  #idx전에 삽입
-                        idx += 1
-                    before_lines.clear()
-                        
-            if(found == False):
-                before_lines.append(j)
+    #for i,text in enumerate(txt):
+    #    txt[i] = correct_str(text)
 
-    for b in before_lines:
-        idx += 1
-        lines.insert(idx,[b]) #idx 뒤에 삽입
-    return lines
+    for i,text in enumerate(txt):
+        for j,l in enumerate(lines):
+            line = l[0]
+            diff = get_difference_score(line, text)
+            tmp = ''.join(text.split())
+            if(len(tmp)<2): continue
+            if(diff<15): dic[i].append((diff, j, line))  #조금 유사
+            if(diff<4): match[i].append((diff, j, line))    #많이 유사
+    
+    #print(match)
+    match2 = {i:-1 for i in range(len(txt))}    #확실하게 매치된 것
+    for k in match:
+        if(len(match[k]) == 1): match2[k] = match[k][0][1]
+    #print(match2)
+
+    trusted = set()
+    for k in match2:
+        if(k>0 and k<len(match2)-1):
+            if(match2[k-1] == match2[k]-1 and match2[k+1] == match2[k]+1):
+                trusted.add(k-1)
+                trusted.add(k)      #3번연속 증가하면 trusted에 넣기
+                trusted.add(k+1)
+    
+    #print('Trust',trusted)
+    if(len(trusted)>0):
+        trusted = sorted(trusted)
+        cur = 0
+        for k in match2:
+            if(k not in trusted and k<trusted[cur]):
+                if(match2[k] >= trusted[cur]):  # trusted앞에 있는데 trusted보다 크면 기각 
+                    match2[k] = -1
+            elif(k not in trusted and k>trusted[cur]):
+                if(match2[k] <= trusted[cur]):  # trusted뒤에 있는데 trusted보다 작으면 기각
+                    match2[k] = -1
+            elif(k in trusted):
+                cur = trusted.index(k)
+        trusted = set(trusted)
+    
+    #print(match[0])
+    #print(match2)
+    for k in dic:
+        # txt의 k번째 줄의 자리찾기
+        candid = sorted(dic[k], key=lambda x:x[0])  #diff를 기준으로 후보 sort
+        remove = []
+        for c in candid:
+            rm = False
+            for i in range(0,k):   #앞에 매칭된 번호보다 현재번호가 작으면 기각
+                if(match2[i] != -1 and match2[i]>=c[1]):
+                    if(k not in trusted):
+                        remove.append(c)
+                        rm = True
+                        break
+            if(not rm):
+                for i in range(k+1,len(txt)):   #뒤에 매칭된 번호보다 현재번호가 크면 기각
+                    if(match2[i] != -1 and match2[i]<=c[1]):
+                        if(k not in trusted):
+                            remove.append(c)
+                            break
+        for r in remove:
+            if(match2[k] == r[1]):
+                match2[k] = -1
+            candid.remove(r)
+
+        if(len(candid) != 0):
+            match2[k] = candid[0][1]    #후보중 가장 점수 높은 것을 매치해줌
+
+    newlines = []
+    prev = []
+    last = 0
+    for i in match2:
+        add = True
+        if(match2[i] != -1):
+            newlines += lines[last:match2[i]]   #lines에서 매칭되지 않았던 것들 추가
+            last = match2[i]+1
+
+            line = lines[match2[i]][0]
+            text = txt[i]
+            diff = get_difference_score(line, text)
+
+            newlines += prev    #전에 txt에서 매칭되지 않았던 것들 추가
+            prev = []
+            if(add):
+                if(diff>4):
+                    newlines.append([line, text])
+                else: newlines.append([text])
+        else:
+            text = txt[i]
+            if(len(newlines)>0) and (compare_start_space(newlines[-1][0], text)>15):
+                add = False
+            if(len(text.split(' '))>9 and get_reservednum(text) == 0):
+                add = False
+            if(add): prev.append([txt[i]])
+
+    newlines += prev
+    newlines = newlines + lines[last:]
+
+    return newlines
+
 
 def is_white_string(str):
     for c in str:
@@ -277,14 +272,6 @@ def trim_split(lines):
     if len(lines[-1]) == 0 or is_white_string(lines[-1]):
         lines = lines[:-1]
     return lines
-
-def get_startspace(str):
-    num = 0
-    for c in str:
-        if(c == ' '): 
-            num += 1
-        else: break
-    return num
 
 def del_enough_space(lines):
     min_space = 999
@@ -303,35 +290,22 @@ def del_enough_space(lines):
 
 def to_semicolon(lines):
     for line in lines:
-        for i in range(len(line)):
+        for i,str in enumerate(line):
             line[i] = line[i].rstrip()
+            if('while' in str or 'for' in str or 'if' in str or 'def' in str) and ('break' not in str): continue
             if line[i][-1] == '.'  or line[i][-1] == ':':
                 line[i] = line[i][:-1] + ';'
     return lines
 
 def get_reservednum(str):
-    reserved = ['asm', 'double', 'new',	'switch', 'auto', 'else', 'operator', 'template',  
-    'break', 'enum', 'private', 'this', 'case', 'extern', 'protected', 'throw', 'catch', 'float', 
-    'public', 'try', 'char', 'for', 'register', 'typedef', 'class', 'friend', 'return', 'union', 
-    'const', 'goto', 'short', 'unsigned', 'continue', 'if', 'signed', 'virtual', 'default', 'length',
-    'inline', 'sizeof', 'void', 'delete', 'int', 'static', 'volatile', 'do', 'long', 'struct', 'while', 
-    '++', '--', '+=', '-=', '—=', '*=', '/=', '<=', '=>', '==', '!=', 'cin', 'cout','compare', 'length', 
-    'swap', 'substr', 'size', 'resize', 'replace', 'append', 'at', 'find', 'find_first_of', 'find_first_not_of',
-    'find_last_of', 'find_last_not_of', 'insert', 'max_size', 'push_back', 'pop_back', 'assign', 'copy', 'back', 
-    'begin', 'capacity', 'cbegin', 'cend', 'clear', 'crbegin', 'data', 'empty', 'erase', 'front', '', 'operator=', 
-    'operator[]', 'rfind', 'end', 'rend', 'shrink_to_fit', 'c_str', 'crend', 'rbegin', 'reserve', 'get_allocator',
-    'include', 'auto', 'if', 'break', 'case', 'register', 'continue', 'return', 'default', 'do', 'sizeof', 'static', 
-    'else', 'struct', 'switch', 'extern', 'typedef', 'union', 'for', 'goto', 'while', 'enum', 'const', 'volatile', 
-    'inline', 'restrict', 'asm', 'fortran','alignas', 'alignof', 'and', 'and_eq', 'audit', 'axiom', 'bitand', 'bitor', 
-    'catch', 'class', 'compl', 'concept', 'constexpr', 'const_cast', 'decltype', 'delete', 'dynamic_cast', 'explicit', 
-    'export', 'final', 'friend', 'import', 'module', 'mutable', 'namespace', 'new', 'noexcept', 'not', 'not_eq', 'operator', 
-    'or', 'or_eq', 'override', 'private', 'protected', 'public', 'reinterpret_cast', 'requires', 'static_assert', 'static_cast', 
-    'template', 'this', 'thread_local', 'throw', 'try', 'typeid', 'typename', 'using', 'virtual', 'xor', 'xor_eq', 'namespace', 
-    'cin', 'cout', '<<', '>>']
+    reserved = reservedset()
+    str = re.sub('\s+',' ',str)
+    str = re.split(r'[^a-zA-Z0-9]', str)
 
     num = 0
     for w in reserved:
-        if(w in str): num += 1    
+        if(w in str): 
+            num += 1    
     return num
     
 
@@ -479,6 +453,8 @@ def correct_code(txt):
         newstr = rm_blank_bf_period(newstr, cur_startspace)
         newstr = make_double_equals(newstr, cur_startspace)
         newstr = string_to_char(newstr)
+        start = get_startspace(newstr)
+        newstr = newstr[:start] + re.sub('\s+',' ',newstr[start:])   #앞 공백 말고 다른 공백 하나로
         if(append): ret.append(newstr)
         if(len(skipstr)!=0): 
             # print('skip', skipstr)
@@ -516,12 +492,16 @@ def select_startspace(line):
     return line
 
 def select_code(line):
-    if(len(line)>1):
-        line.sort(key=lambda x : get_reservednum(x))
-        if(get_reservednum(line[0]) != get_reservednum(line[-1])):
-            # print('line', line)
-            return [line[-1]]
-    return line
+    count_reserved = []
+    for l in line:
+        count_reserved.append((l, get_reservednum(l)))
+    count_reserved = sorted(count_reserved, key=lambda x: x[1])
+    max_reserved = count_reserved[0]
+    ret = [max_reserved[0]]
+    for i in count_reserved[1:]:
+        if(i[1]>max_reserved[1]-2 and get_difference_score(max_reserved[0], i[0])>4):
+            ret.append(i[0])
+    return ret
 
 def add_bracket(lines):
     left = 0
@@ -545,8 +525,6 @@ def make_string(lines):
 
 def delete_code(answer):    
 
-    # 이전 줄보다 시작이 9칸이상 차이나면 제거
-    # 글자수가 1~4글자인데 +,-,*,/,= 등 없으면 제거
     res = []
     prev_space = get_startspace(answer[0][0])
     prev_line = answer[0]
@@ -557,49 +535,62 @@ def delete_code(answer):
         li = []
 
         for str in line:
+            start = get_startspace(str)
+            str = str[:start] + re.sub('\s+',' ',str[start:])   #앞 공백 말고 다른 공백 하나로
+            
+            end = str.find(';')
+            if(end == -1): end = str.find(':')
+            
+            if(end != -1 and end != len(str)-1 and len(str)-end<5):
+                str = str[:end+1]   # ;:가 있고 뒤에 5자이하라면 뒤는 무시
             delete = False
-            dnum = 0
 
-            cur_space = get_startspace(str)
+            cur_space = start
             if(cur_space - prev_space > 8): #이전 줄과 시작이 9칸이상 차이나면 삭제
                 delete = True
-                dnum = 1
             elif(idx > 0 and get_difference_score(prev_line[0], str) < 3):  #이전 줄과 너무 비슷하면 삭제
                 delete = True
-                dnum = 4
             else: 
                 str1 = ' '.join(str.split())
-                # reserved word가 하나도 없고 "",괄호 안 제외했을 때 단어 6개이상이면 제거 or //로 시작하면 제거
+
+                for x in str1:
+                    if x not in string.printable:
+                        delete = True
+                # //로 시작하면 제거 (주석)
                 if(str1.startswith('//')): delete = True
                 
-                elif(len(str1)==1 and '}' in str1):
+                # 모두 대문자면 제거 
+                elif(len(re.findall(r"[{|}|a-z|0-9]", str1)) == 0):
+                    delete = True
+                    
+                elif(len(str1)==1 and '}' in str1): #닫히는 중괄호가 전 줄보다 뒤에 있을 때
                     if(cur_space > prev_space):
                         delete = True
-                        dnum = 5
 
+                # reserved word가 하나도 없고 "",괄호 안 제외했을 때 단어 6개이상이면 제거
                 elif(len(str1) > 5):
                     if(get_reservednum(str1) == 0):
                         tmp = remove_bracket(str1)
                         tmp = remove_string(tmp)
+                        cnt = 0
                         if(len(tmp.split()) > 5):
                             delete = True
-                            dnum = 2
+                        for i in ['!','@','$','%','^','&','*','~','_']:
+                            if i in tmp: cnt += 1
+                        if(cnt>1): delete = True
 
-                else:
-                    check = ['+','-','*','/','=','{','}','(',')','[',']']
+                else:       # 글자수가 1~4글자인데 +,-,*,/,= 등 없으면 제거
+                    check = set(['+','-','*','/','=','{','}','(',')','[',']'])
                     num = 0
                     for c in check:
-                        if(c in str1):
-                            num+=1
+                        if(c in str1): num += 1
                     if(num == 0): 
                         delete = True
-                        dnum = 3
 
             if not delete: 
                 li.append(str)
 
             else: 
-                # print('delete', dnum, str)
                 pass
 
         if(len(li) != 0):
@@ -619,7 +610,6 @@ def make_result(answer):
                 res += '//'+str+'\n'
 
     return res
-
 
 class code_correct:
     def __init__(self, ocr_lines):
