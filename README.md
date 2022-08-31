@@ -7,3 +7,9 @@ need python3, and download package we used
 
 we use AWS Route53, EC2, nginx for https.
 
+API
+
+/mdownload
+
+/ocr
+
